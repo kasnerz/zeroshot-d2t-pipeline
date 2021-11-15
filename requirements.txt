@@ -1,0 +1,13 @@
+wheel==0.36.2
+absl-py==0.11.0
+numpy==1.19.1
+scipy==1.2.1
+lm-scorer==0.4.2
+torch==1.7.1
+transformers==3.5.1
+matplotlib
+scikit-image
+future
+nltk==3.5
+pytorch-lightning==1.0.7
+datasets==1.5.0
