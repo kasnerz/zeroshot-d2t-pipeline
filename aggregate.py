@@ -11,8 +11,8 @@ import pytorch_lightning as pl
 
 from pprint import pprint as pp
 from utils.tokenizer import Tokenizer
-from model import AggPairsTrainingModule, AggTrainingModule
-from dataloader import AggPairsDataModule, AggDataModule
+from model import AggTrainingModule
+from dataloader import AggDataModule
 from inference import AggInferenceModule
 
 class AggModule:

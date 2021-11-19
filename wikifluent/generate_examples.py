@@ -111,6 +111,8 @@ def create_example(line, coref_predictor, tokenizer):
     for i, sent in enumerate(sentences):
         sents = split_sentence(sent, dm)
         sents_all += sents
+
+        # TODO change to separators
         aggregation += [i] * len(sents)
     
     text = " ".join(sents_all)

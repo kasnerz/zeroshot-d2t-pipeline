@@ -184,6 +184,8 @@ if __name__ == '__main__':
         help="Name of the dataset to preprocess.")
     parser.add_argument("--dataset_dir", type=str, default=None,
         help="Path to the dataset")
+    parser.add_argument("--templates", type=str, default=None,
+        help="Path to the JSON file with templates")
     parser.add_argument("--output", type=str, required=True,
         help="Name of the output directory")
     parser.add_argument('--splits', type=str, nargs='+', default=["train", "dev", "test"],
@@ -210,11 +212,10 @@ if __name__ == '__main__':
     # Load data
     logger.info(f"Loading dataset {dataset_name}")
     dataset = data.get_dataset_class(dataset_name)()
-
-    path = args.dataset_dir or os.path.join("data", "original", dataset_name.lower())
+    path = args.dataset_dir
 
     try:
-        dataset.load_from_dir(path=path, splits=args.splits)
+        dataset.load_from_dir(path=path, template_path=args.templates, splits=args.splits)
     except FileNotFoundError as err:
         logger.error(f"Dataset not found in {path}")
         raise err

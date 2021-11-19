@@ -56,27 +56,6 @@ def create_example_ordering(example):
     }
     return new_example
 
-def create_example_aggregation_pairwise(example):
-    sents = example["out"]
-    examples = []
-    prev_agg = 0
-
-    for agg, s1, s2 in zip(example["aggregation"], sents, sents[1:]):
-        if agg != prev_agg:
-            sep = 1
-        else:
-            sep = 0
-
-        example = {
-            "s1" : s1,
-            "s2" : s2,
-            "label" : sep
-        }
-        examples.append(example)
-        prev_agg = agg
-
-    return examples
-
 
 def create_example_aggregation(example):
     separators = []
@@ -118,8 +97,6 @@ def collate(in_dir, out_dir, mode, sep, val_test_ratio):
                     res = create_example_ordering(example)
                 if mode == "agg":
                     res = create_example_aggregation(example)
-                elif mode == "agg_pairs":
-                    res = create_example_aggregation_pairwise(example)
                 elif mode == "comp_full":
                     res = create_example_comp_full(example)
                 elif mode == "comp_ord":
@@ -148,15 +125,14 @@ def collate(in_dir, out_dir, mode, sep, val_test_ratio):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--in_dir", type=str, default="chunks",
-        help="Path to the directory with individual dataset chunks.")
+    parser.add_argument("--in_dir", type=str, default="wikifluent-parts",
+        help="Path to the directory with individual dataset parts.")
     parser.add_argument("--out_dir", type=str, required=True,
         help="Path to the output directory.")
     parser.add_argument("--mode", type=str, required=True,
         help="Which model to process the dataset for:\
                 ord = ordering model, \
                 agg = aggregation model, \
-                agg_pairs = aggregation model using pairs of sentences, \
                 comp_full = paragraph compression model including ordering and aggregation, \
                 comp_ord = paragraph compression model on ordered sentences, \
                 comp_ord_sep = paragraph compression model on ordered and separated sentences")

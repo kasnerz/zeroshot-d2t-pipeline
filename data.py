@@ -40,15 +40,13 @@ class D2TDataset:
         self.data = {split: [] for split in ["train", "dev", "test"]}
         self.fallback_template = "The <predicate> of <subject> is <object> ."
 
-    def load_from_dir(self, path, splits):
+    def load_from_dir(self, path, template_path, splits):
         """Parses the original dataset files into an internal representation"""
         raise NotImplementedError
 
     # ====== templates
-    def load_templates(self, path):
+    def load_templates(self, templates_filename):
         """Loads existing templates from a JSON file"""
-        templates_filename = os.path.join(path, "templates.json")
-
         logger.info(f"Loaded templates from {templates_filename}")
         with open(templates_filename) as f:
             self.templates = json.load(f)
@@ -73,9 +71,9 @@ class WebNLG(D2TDataset):
 
         return template
 
-    def load_from_dir(self, path, splits):
+    def load_from_dir(self, path, template_path, splits):
         # ====== templates
-        self.load_templates(path)
+        self.load_templates(template_path)
 
         for split in splits:
             logger.info(f"Loading {split} split")
@@ -148,10 +146,10 @@ class E2E(D2TDataset):
     def __init__(self):
         super().__init__()
 
-    def load_from_dir(self, path, splits):
+    def load_from_dir(self, path, template_path, splits):
 
         # ====== templates
-        self.load_templates(path)
+        self.load_templates(template_path)
 
         for split in splits:
             logger.info(f"Loading {split} split")

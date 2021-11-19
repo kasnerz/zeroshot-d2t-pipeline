@@ -31,58 +31,49 @@ class D2TDataModule(pl.LightningDataModule):
         # disable the "huggingface/tokenizers: The current process just got forked" warning
         os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
+        self.special_tokens = special_tokens
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name,
                                                        use_fast=True)
-        self.special_tokens = special_tokens
-
         if special_tokens:
             add_special_tokens(self.tokenizer, None)
 
 
     def setup(self, stage):
-        data_dir = os.path.join("data", self.args.dataset)
+        data_dir = os.path.join(self.args.dataset)
 
         if stage == "fit":
             splits = ["train", "dev"]
         elif stage == "predict":
             splits = [self.args.split]
-
-        self.dataset = {
+        
+        raw_dataset = {
             split : load_dataset("json", 
                 data_files=os.path.join(data_dir, f"{split}.json"),
                 field="data",
                 split="train") for split in splits
         }
+        self.dataset = self._process_raw_dataset(raw_dataset)
 
-        for split in self.dataset.keys():
-            for column in self.dataset[split].column_names:
-                if column not in ["text", "labels"]:
-                    self.dataset[split] = self.dataset[split].remove_columns(column)
+    
+    def _process_raw_dataset(self, raw_dataset):
+        dataset = {}
 
-            self.dataset[split] = self.dataset[split].map(
+        for split in raw_dataset.keys():
+            dataset[split] = raw_dataset[split].map(
                 self._convert_to_features,
-                batched=True,
-                remove_columns=['labels'],
+                batched=True
             )
-            self.dataset[split].set_format(
+            dataset[split].set_format(
                 type="torch",
                 columns=[
                     "attention_mask", "input_ids", "labels"
                 ])
+        return dataset
+
 
     def _convert_to_features(self, example_batch, indices=None):
-        text = example_batch["text"]
+        return NotImplementedError
 
-        features = self.tokenizer(
-            text,
-            max_length=self.args.max_length,
-            truncation=True
-        )
-        features["labels"] = self.tokenizer(
-            example_batch["labels"]
-        )["input_ids"]
-
-        return features
 
     def train_dataloader(self):
         return DataLoader(
@@ -122,42 +113,24 @@ class D2TDataModule(pl.LightningDataModule):
         return batch_collated
 
 
+# TODO
+class OrdDataModule(D2TDataModule):
+    def __init__(self, args, model_name=None):
+        super().__init__(args, model_name)
+
+
+
+
 class AggDataModule(D2TDataModule):
     def __init__(self, args, model_name=None):
         super().__init__(args, model_name)
 
 
-    def setup(self, stage):
-        data_dir = os.path.join("data", self.args.dataset)
-
-        if stage == "fit":
-            splits = ["train", "dev"]
-        elif stage == "predict":
-            splits = ["dev", "test"]
-
-        self.dataset = {
-            split : load_dataset("json", data_files=os.path.join(data_dir, f"{split}.json"), field="data", split="train") 
-                    for split in splits
-        }
-
-        for split in self.dataset.keys():
-            self.dataset[split] = self.dataset[split].map(
-                self._convert_to_features,
-                batched=True,
-                remove_columns=['labels'],
-            )
-            self.dataset[split].set_format(
-                type="torch",
-                columns=[
-                    "attention_mask", "input_ids", "labels"
-                ])
-
-
     def _convert_to_features(self, example_batch, indices=None):
-        text = example_batch["text"]
-        labels = example_batch["labels"]
+        sents = example_batch["sents"]
+        labels = example_batch["sep"]
 
-        text = [f" {self.tokenizer.sep_token} ".join(group) for group in text]
+        text = [f" {self.tokenizer.sep_token} ".join(group) for group in sents]
 
         features = self.tokenizer(text,
             max_length=self.args.max_length,
@@ -191,91 +164,45 @@ class AggDataModule(D2TDataModule):
 
 
 
-
-# class AggPairsDataModule(D2TDataModule):
-#     def __init__(self, args, model_name=None):
-#         super().__init__(args, model_name)
-
-#     def setup(self, stage):
-#         data_dir = os.path.join("data", self.args.dataset)
-
-#         if stage == "fit":
-#             splits = ["train", "dev"]
-#         elif stage == "predict":
-#             splits = ["dev", "test"]
-
-#         self.dataset = {
-#             split : load_dataset("json", 
-#                 data_files=os.path.join(data_dir, f"{split}.json"),
-#                 field="data",
-#                 split="train") for split in splits
-#         }
-
-#         for split in self.dataset.keys():
-#             for column in self.dataset[split].column_names:
-#                 if column not in ["s1", "s2", "label"]:
-#                     self.dataset[split] = self.dataset[split].remove_columns(column)
-
-#             self.dataset[split] = self.dataset[split].map(
-#                 self._convert_to_features,
-#                 batched=True,
-#                 remove_columns=["s1", "s2", "label"],
-#             )
-#             self.dataset[split].set_format(
-#                 type="torch",
-#                 columns=[
-#                     "attention_mask", "input_ids", "labels"
-#                 ])
-
-#     def _convert_to_features(self, example_batch, indices=None):
-#         s1 = example_batch["s1"]
-#         s2 = example_batch["s2"]
-
-#         features = self.tokenizer(
-#             s1,
-#             s2,
-#             max_length=self.args.max_length,
-#             truncation=True
-#         )
-#         features["labels"] = example_batch["label"]
-
-#         return features
-
-#     def _pad_sequence(self, batch):
-#         batch_collated = {
-#             "labels" : torch.tensor([x["labels"] for x in batch])
-#         }
-
-#         paddings = {
-#             "input_ids" : self.tokenizer.pad_token_id,
-#             "attention_mask" : 0,
-#         }
-#         for key in ["input_ids", "attention_mask"]:
-#             elems = [x[key] for x in batch]
-#             elems_pad = pad_sequence(elems, batch_first=True, padding_value=paddings[key])
-#             batch_collated[key] = elems_pad
-
-#         return batch_collated
-
-
-# TODO
-class OrdDataModule(D2TDataModule):
-    def __init__(self, args, model_name=None):
-        super().__init__(args, model_name)
-
-
-
 class PCDataModule(D2TDataModule):
+    def __init__(self, args, model_name=None):
+        super().__init__(args, model_name, special_tokens=True)
+
+    def _convert_to_features(self, example_batch, indices=None):
+        seps_all = example_batch["sep"]
+        sents_all = example_batch["sents"]
+        out = []
+
+        for sents, seps in zip(sents_all, seps_all):
+            example = [sents[0]]
+            for sep, sent in zip(seps, sents[1:]):
+                if sep == 1:
+                    example.append(self.tokenizer.sep_token)
+                example.append(sent)
+
+            text = " ".join(example)
+            out.append(text)
+
+        features = self.tokenizer(
+            out,
+            max_length=self.args.max_length,
+            truncation=True
+        )
+        features["labels"] = self.tokenizer(
+            example_batch["text"]
+        )["input_ids"]
+
+        return features
+
+
+class PCAggDataModule(D2TDataModule):
     def __init__(self, args, model_name=None):
         super().__init__(args, model_name, special_tokens=True)
 
 
     def _convert_to_features(self, example_batch, indices=None):
-        text = example_batch["text"]
-
-        if type(text[0]) is list:
-            # input is a list of separate sentences -> join 
-            text = [" ".join(group) for group in text]
+        text = example_batch["sents"]
+        text = [" ".join(group) for group in text]
 
         features = self.tokenizer(
             text,
@@ -283,7 +210,33 @@ class PCDataModule(D2TDataModule):
             truncation=True
         )
         features["labels"] = self.tokenizer(
-            example_batch["labels"]
+            example_batch["text"]
+        )["input_ids"]
+
+        return features
+
+
+class PCOrdAggDataModule(D2TDataModule):
+    def __init__(self, args, model_name=None):
+        super().__init__(args, model_name, special_tokens=True)
+        random.seed(args.seed)
+
+    def _convert_to_features(self, example_batch, indices=None):
+        sents_all = []
+
+        for sents in example_batch["sents"]:
+            random.shuffle(sents)
+            sents_all.append(sents)
+
+        text = [" ".join(group) for group in sents_all]
+
+        features = self.tokenizer(
+            text,
+            max_length=self.args.max_length,
+            truncation=True
+        )
+        features["labels"] = self.tokenizer(
+            example_batch["text"]
         )["input_ids"]
 
         return features

@@ -1,7 +1,17 @@
 #!/usr/bin/env python3
 
-from model import D2TTrainingModule, PCTrainingModule, AggTrainingModule
-from dataloader import D2TDataModule, PCDataModule, AggDataModule
+from model import (
+    D2TTrainingModule, 
+    AggTrainingModule,
+    PCTrainingModule
+)
+from dataloader import (
+    D2TDataModule, 
+    AggDataModule,
+    PCDataModule,
+    PCAggDataModule, 
+    PCOrdAggDataModule, 
+)
 
 import logging
 import argparse
@@ -23,7 +33,9 @@ def parse_args(args=None):
         help="Name of the pipeline module to be trained:\
             ord = ordering \
             agg = aggregation \
-            comp = paragraph compression."
+            pc = paragraph compression \
+            pc_agg = paragraph compression + aggregation \
+            pc_ord_agg = paragraph compression + ordering + aggregation."
         )
     parser.add_argument("--model_name", type=str, default="facebook/bart-base",
         help="Name of the model from the Huggingface Transformers library.")
@@ -31,7 +43,7 @@ def parse_args(args=None):
         help="Path to the saved checkpoint to be loaded.")
     parser.add_argument("--dataset", type=str, required=True,
         help="Dataset name (webnlg / e2e / ...).")
-    parser.add_argument("--batch_size", type=int, default=16,
+    parser.add_argument("--batch_size", type=int, default=8,
         help="Batch size for finetuning the model")
     parser.add_argument("--output_dir", type=str, default="experiments",
         help="Output directory")
@@ -39,7 +51,7 @@ def parse_args(args=None):
         help="Name of the checkpoint (default='model')")
     parser.add_argument("--experiment", type=str, required=True,
         help="Experiment name used for naming the experiment directory")
-    parser.add_argument("--max_length", type=int, default=1024,
+    parser.add_argument("--max_length", type=int, default=512,
         help="Maximum number of tokens per example")
     parser.add_argument("--seed", default=42, type=int,
         help="Random seed.")
@@ -59,13 +71,17 @@ if __name__ == '__main__':
     training_module = {
         "ord" : None,    #TODO
         "agg" : AggTrainingModule,
-        "comp" : PCTrainingModule
+        "pc" : PCTrainingModule,    # training module is the same for PC* modules
+        "pc_agg" : PCTrainingModule,
+        "pc_ord_agg" : PCTrainingModule
     }[args.module]
 
     data_module = {
         "ord" : None,   #TODO
         "agg" : AggDataModule,
-        "comp" : PCDataModule
+        "pc" : PCDataModule,
+        "pc_agg" : PCAggDataModule,
+        "pc_ord_agg" : PCOrdAggDataModule,
     }[args.module]
 
     pl.seed_everything(args.seed)

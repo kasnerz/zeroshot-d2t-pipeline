@@ -131,7 +131,7 @@ class D2TTrainingModule(pl.LightningModule):
     def add_model_specific_args(parent_parser):
         parser = argparse.ArgumentParser(parents=[parent_parser],
                                          add_help=False)
-        parser.add_argument("--learning_rate", default=3e-5, type=float)
+        parser.add_argument("--learning_rate", default=2e-5, type=float)
         parser.add_argument("--adam_epsilon", default=1e-9, type=float)
         parser.add_argument("--adam_beta1", default=0.9, type=float)
         parser.add_argument("--adam_beta2", default=0.997, type=float)
@@ -139,20 +139,6 @@ class D2TTrainingModule(pl.LightningModule):
         parser.add_argument("--label_smoothing", default=0.1, type=float)
 
         return parser
-
-
-class AggPairsTrainingModule(D2TTrainingModule):
-    def __init__(self, args, **kwargs):
-        super().__init__(args, **kwargs)
-
-        self.model = AutoModelForSequenceClassification.from_pretrained(
-            args.model_name,
-            return_dict=True,
-            num_labels=2
-        )
-
-    def test_step(self, batch, batch_idx):
-        raise NotImplementedError
 
 
 class AggTrainingModule(D2TTrainingModule):

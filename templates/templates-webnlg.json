@@ -1,0 +1,1065 @@
+{
+   "1st_runway_LengthFeet":[
+      "1st runway of <subject> airport is <object> feet long ."
+   ],
+   "1st_runway_LengthMetre":[
+      "1st runway of <subject> airport is <object> meters long ."
+   ],
+   "1st_runway_Number":[
+      "1st runway of <subject> airport has number <object> ."
+   ],
+   "1st_runway_SurfaceType":[
+      "The first runway at <subject> is made from <object> ."
+   ],
+   "2nd_runway_SurfaceType":[
+      "The second runway at <subject> is made from <object> ."
+   ],
+   "3rd_runway_LengthFeet":[
+      "3rd runway of the <subject> airport is <object> feet long ."
+   ],
+   "3rd_runway_SurfaceType":[
+      "The 3rd runway at the <subject> airport is made of <object> ."
+   ],
+   "4th_runway_LengthFeet":[
+      "4tg runway of the <subject> airport is <object> feet long ."
+   ],
+   "4th_runway_SurfaceType":[
+      "The 4th runway at the <subject> airport is made of <object> ."
+   ],
+   "5th_runway_Number":[
+      "5th runway of <subject> airport has number <object> ."
+   ],
+   "CODEN_code":[
+      "<subject> has the CODEN code <object> ."
+   ],
+   "EISSN_number":[
+      "<subject> has the EISSN number <object> ."
+   ],
+   "IATA_Location_Identifier":[
+      "<subject> has an <object> IATA Location Identifier ."
+   ],
+   "ICAO_Location_Identifier":[
+      "<subject> has an <object> ICAO Location Identifier ."
+   ],
+   "ISBN_number":[
+      "<subject> 's ISBN number is <object> ."
+   ],
+   "ISSN_number":[
+      "<subject> 's ISSN number is <object> ."
+   ],
+   "LCCN_number":[
+      "<subject> 's LCCN number is <object> ."
+   ],
+   "LibraryofCongressClassification":[
+      "<subject> has the Library of Congress Classification id <object> ."
+   ],
+   "OCLC_number":[
+      "<subject> has the OCLC number <object> ."
+   ],
+   "ReferenceNumber in the National Register of Historic Places":[
+      "<subject> ' reference number is <object> in the National Register of Historic Places ."
+   ],
+   "UTCOffset":[
+      "<subject> has an UTC offset of <object> ."
+   ],
+   "abbreviation":[
+      "<subject> is abbreivated as <object>"
+   ],
+   "academicDiscipline":[
+      "<subject> studies <object> ."
+   ],
+   "academicStaffSize":[
+      "<subject> has <object> employees ."
+   ],
+   "added to the National Register of Historic Places":[
+      "<subject> was added to the National Register of Historic Places on <object> ."
+   ],
+   "address":[
+      "<subject> is located at <object> ."
+   ],
+   "administrativeArrondissement":[
+      "<subject> is in the administrative arrondissement of <object> ."
+   ],
+   "administrativeCounty":[
+      "<subject> is found in the county of <object> ."
+   ],
+   "affiliation":[
+      "<subject> is affiliated with <object> ."
+   ],
+   "aircraftFighter":[
+      "<subject> aircraft fighter is called <object> ."
+   ],
+   "aircraftHelicopter":[
+      "<subject> has an aircraft helicopter <object> ."
+   ],
+   "almaMater":[
+      "<subject> went to the <object> university ."
+   ],
+   "alternativeName":[
+      "<subject> is also known as <object> ."
+   ],
+   "alternativeNames":[
+      "<subject> is also called <object> ."
+   ],
+   "anthem":[
+      "<subject> has a national anthem called <object> ."
+   ],
+   "architect":[
+      "<subject> was designed by <object> ."
+   ],
+   "architecturalStyle":[
+      "<subject> is built in the style of <object> ."
+   ],
+   "areaCode":[
+      "<subject> has the area code <object> ."
+   ],
+   "areaOfLand":[
+      "<subject> covers <object> of land ."
+   ],
+   "areaOfWater":[
+      "<subject> has an area of water <object> ."
+   ],
+   "areaTotal":[
+      "<subject> has an area of <object> ."
+   ],
+   "attackAircraft":[
+      "<object> is an attack aircraft of <subject> ."
+   ],
+   "author":[
+      "<subject> is written by <object> ."
+   ],
+   "award":[
+      "<subject> has won <object> ."
+   ],
+   "awards":[
+      "<subject> received <object> awards ."
+   ],
+   "backup pilot":[
+      "<subject> 's backup pilot was <object> ."
+   ],
+   "battles":[
+      "<subject> has fought in <object> ."
+   ],
+   "bedCount":[
+      "<subject> has <object> beds ."
+   ],
+   "bird":[
+      "<object> is a bird living in <subject> ."
+   ],
+   "birthDate":[
+      "<subject> was born on <object> ."
+   ],
+   "birthName":[
+      "<subject> was born as <object> ."
+   ],
+   "birthPlace":[
+      "<subject> was born in <object> ."
+   ],
+   "buildingStartDate":[
+      "Construction of <subject> began in <object> ."
+   ],
+   "buildingType":[
+      "<subject> is <object> ."
+   ],
+   "capital":[
+      "<subject> 's capital is <object> ."
+   ],
+   "carbohydrate":[
+      "<subject> have <object> of carbohydrates ."
+   ],
+   "category":[
+      "<subject> is categorized as <object> ."
+   ],
+   "chairman":[
+      "<object> is chairman of <subject> ."
+   ],
+   "chairmanTitle":[
+      "<subject> 's chairman is called <object> ."
+   ],
+   "chairperson":[
+      "<subject> is the chair of <object> ."
+   ],
+   "champions":[
+      "<object> won <subject> ."
+   ],
+   "chancellor":[
+      "<object> is the chancellor of <subject> ."
+   ],
+   "city":[
+      "<subject> is located in <object> ."
+   ],
+   "cityServed":[
+      "<subject> serves <object> ."
+   ],
+   "class":[
+      "<subject> is classified as <object> ."
+   ],
+   "club":[
+      "<subject> plays in <object> ."
+   ],
+   "commander":[
+      "<subject> was commanded by <object> ."
+   ],
+   "compete in":[
+      "<subject> competed in <object> ."
+   ],
+   "completionDate":[
+      "<subject> was finished in <object> ."
+   ],
+   "cost":[
+      "<subject> costs <object> ."
+   ],
+   "country":[
+      "<subject> is from <object> ."
+   ],
+   "countySeat":[
+      "<subject> county seat is <object> ."
+   ],
+   "course":[
+      "<subject> is a <object> dish."
+   ],
+   "creator":[
+      "<subject> was created by <object> ."
+   ],
+   "creatorOfDish":[
+      "<subject> was created within <object> ."
+   ],
+   "crewMembers":[
+      "<object> was a crew member of <subject> ."
+   ],
+   "currency":[
+      "<subject> 's currency is <object> ."
+   ],
+   "currentTenants":[
+      "<object> is the current tenant of <subject> ."
+   ],
+   "dateOfRetirement":[
+      "<subject> retired on <object> ."
+   ],
+   "dean":[
+      "<subject> dean is <object> ."
+   ],
+   "deathDate":[
+      "<subject> died on <object> ."
+   ],
+   "deathPlace":[
+      "<subject> died in <object> ."
+   ],
+   "dedicatedTo":[
+      "<subject> is dedicated to <object> ."
+   ],
+   "demonym":[
+      "<subject> inhabitants are known as <object> ."
+   ],
+   "designer":[
+      "<subject> was designed by <object> ."
+   ],
+   "developer":[
+      "<subject> was developed by <object> ."
+   ],
+   "director":[
+      "<subject> was directed by <object> ."
+   ],
+   "dishVariation":[
+      "<object> is a type of <subject> ."
+   ],
+   "distributor":[
+      "<subject> was distributed by <object> ."
+   ],
+   "district":[
+      "<subject> is located in <object> ."
+   ],
+   "division":[
+      "<subject> belongs to <object> ."
+   ],
+   "doctoralAdvisor":[
+      "<subject> doctoral advisor was <object> ."
+   ],
+   "editor":[
+      "<subject> was edited by <object> ."
+   ],
+   "elevationAboveTheSeaLevel":[
+      "<subject> is <object> above sea level ."
+   ],
+   "elevationAboveTheSeaLevel_(in_feet)":[
+      "<subject> is <object> ft above sea level ."
+   ],
+   "elevationAboveTheSeaLevel_(in_metres)":[
+      "<subject> is <object> metres above the sea level ."
+   ],
+   "established":[
+      "<subject> was established on <object> ."
+   ],
+   "ethnicGroup":[
+      "<object> are an ethnic group in <subject> ."
+   ],
+   "ethnicGroups":[
+      "<object> are <subject> ethnic group ."
+   ],
+   "family":[
+      "<subject> is a member of the <object> family ."
+   ],
+   "fat":[
+      "<subject> contain <object> of fat ."
+   ],
+   "firstAppearanceInFilm":[
+      "<subject> first appeared in <object> ."
+   ],
+   "firstPublicationYear":[
+      "<subject> was first published in <object> ."
+   ],
+   "floorArea":[
+      "<subject> has a floor area of <object> ."
+   ],
+   "floorCount":[
+      "<subject> has <object> floors ."
+   ],
+   "followedBy":[
+      "<subject> is followed by <object> ."
+   ],
+   "formerName":[
+      "<subject> was formerly called <object> ."
+   ],
+   "fossil":[
+      "<object> is a fossil from <subject> ."
+   ],
+   "foundationPlace":[
+      "<subject> was founded in <object> ."
+   ],
+   "foundedBy":[
+      "<subject> was founded by <object> ."
+   ],
+   "founder":[
+      "<subject> was founded by <object> ."
+   ],
+   "foundingDate":[
+      "<subject> was founded on <object> ."
+   ],
+   "frequency":[
+      "<subject> is published <object> ."
+   ],
+   "fullName":[
+      "<subject> 's full name is <object> ."
+   ],
+   "fullname":[
+      "<subject> stands for <object> ."
+   ],
+   "genre":[
+      "<subject> performs <object> ."
+   ],
+   "genus":[
+      "<subject> is part of <object> genus ."
+   ],
+   "governingBody":[
+      "<subject> is governed by <object> ."
+   ],
+   "governmentType":[
+      "<object> governs <subject> ."
+   ],
+   "ground":[
+      "<subject> are based at <object> ."
+   ],
+   "has to its north":[
+      "<object> is to the north of <subject> ."
+   ],
+   "has to its northeast":[
+      "<object> is to the northeast of <subject> ."
+   ],
+   "has to its southwest":[
+      "<object> is to the southwest of <subject> ."
+   ],
+   "has to its west":[
+      "<object> is to the west of <subject> ."
+   ],
+   "headquarter":[
+      "<subject> headquarter is <object> ."
+   ],
+   "headquarters":[
+      "<subject> headquarter is in <object> ."
+   ],
+   "height":[
+      "<subject> is <object> high ."
+   ],
+   "higher":[
+      "<subject> is higher than <object> ."
+   ],
+   "hometown":[
+      "<object> is the home town of <subject> ."
+   ],
+   "hubAirport":[
+      "<object> is the hub for <subject> ."
+   ],
+   "impactFactor":[
+      "<subject> has the impact <object> ."
+   ],
+   "inaugurationDate":[
+      "<subject> was inaugurated on <object> ."
+   ],
+   "influencedBy":[
+      "<subject> is influenced by <object> ."
+   ],
+   "ingredient":[
+      "<subject> contains <object> ."
+   ],
+   "isPartOf":[
+      "<subject> is a part of <object> ."
+   ],
+   "jurisdiction":[
+      "<subject> jurisdiction is <object> ."
+   ],
+   "keyPerson":[
+      "<object> is the key person for <subject> ."
+   ],
+   "language":[
+      "<object> is spoken in <subject> ."
+   ],
+   "languages":[
+      "<object> is spoken in <subject> ."
+   ],
+   "largestCity":[
+      "<subject> is the largest city in <object> ."
+   ],
+   "lastAired":[
+      "<subject> last aired on <object> ."
+   ],
+   "latinName":[
+      "<subject> has the latin name <object> ."
+   ],
+   "leader":[
+      "<object> is the leader of <subject> ."
+   ],
+   "leaderName":[
+      "<object> is the leader of <subject> ."
+   ],
+   "leaderParty":[
+      "<object> are the leading party in <subject> ."
+   ],
+   "leaderTitle":[
+      "<subject> leader is known as <object> ."
+   ],
+   "league":[
+      "<subject> plays in <object>"
+   ],
+   "legislature":[
+      "<subject> has legislature of <object> ."
+   ],
+   "literaryGenre":[
+      "<subject> is considered <object> ."
+   ],
+   "location":[
+      "<subject> is located in <object> ."
+   ],
+   "locationCity":[
+      "<subject> is located in <object> ."
+   ],
+   "locationIdentifier":[
+      "<subject> location id is <object> ."
+   ],
+   "mainIngredients":[
+      "<object> is a main ingredient of <subject> ."
+   ],
+   "manager":[
+      "<subject> is managed by <object> ."
+   ],
+   "material":[
+      "<subject> is made of <object> ."
+   ],
+   "mayor":[
+      "<object> is the mayor of <subject> ."
+   ],
+   "mediaType":[
+      "<subject> was produced in <object> ."
+   ],
+   "motto":[
+      "<subject> motto is <object> ."
+   ],
+   "municipality":[
+      "<subject> is located in <object> ."
+   ],
+   "nationality":[
+      "<subject> is from <object> ."
+   ],
+   "nativeName":[
+      "<object> is the native name of <subject> ."
+   ],
+   "nearestCity":[
+      "<subject> is the nearest city to <object> ."
+   ],
+   "nickname":[
+      "<subject> is known as <object> ."
+   ],
+   "notableWork":[
+      "<object> is a notable work by <subject> ."
+   ],
+   "numberOfMembers":[
+      "<subject> has <object> members ."
+   ],
+   "numberOfPages":[
+      "<subject> has <object> pages ."
+   ],
+   "numberOfPostgraduateStudents":[
+      "<subject> has <object> postgraduate students ."
+   ],
+   "numberOfStudents":[
+      "<subject> has <object> students ."
+   ],
+   "numberOfUndergraduateStudents":[
+      "<subject> has <object> undergraduate students ."
+   ],
+   "occupation":[
+      "<subject> is <object> ."
+   ],
+   "officialLanguage":[
+      "<object> is the official language of <subject> ."
+   ],
+   "officialSchoolColour":[
+      "<object> are the colours of <subject> ."
+   ],
+   "operatingOrganisation":[
+      "<subject> is operated by <object> ."
+   ],
+   "operator":[
+      "<subject> is operated by <object> ."
+   ],
+   "order":[
+      "<subject> belong to the <object> order ."
+   ],
+   "outlookRanking":[
+      "<subject> has an outlook ranking of <object> ."
+   ],
+   "owner":[
+      "<object> owns <subject> ."
+   ],
+   "owningOrganisation":[
+      "<object> owns <subject> ."
+   ],
+   "parentCompany":[
+      "<object> owns <subject> ."
+   ],
+   "part":[
+      "<subject> is in <object> ."
+   ],
+   "placeOfBirth":[
+      "<subject> was born in <object> ."
+   ],
+   "placeOfDeath":[
+      "<subject> died in <object> ."
+   ],
+   "populationDensity":[
+      "<subject> has a population density of <object> ."
+   ],
+   "populationTotal":[
+      "<object> people live in <subject> ."
+   ],
+   "postalCode":[
+      "<subject> has postal codes <object> ."
+   ],
+   "precededBy":[
+      "<subject> was preceded by <object> ."
+   ],
+   "president":[
+      "<object> is president of <subject> ."
+   ],
+   "product":[
+      "<subject> produces <object> ."
+   ],
+   "publisher":[
+      "<subject> is published by <object> ."
+   ],
+   "rector":[
+      "<object> is the rector of <subject> ."
+   ],
+   "region":[
+      "<subject> comes from <object> ."
+   ],
+   "regionServed":[
+      "<subject> serves <object> ."
+   ],
+   "related":[
+      "<subject> is related to <object> ."
+   ],
+   "religion":[
+      "<object> is the religion of <subject> ."
+   ],
+   "representative":[
+      "<object> served as a representative of <subject> ."
+   ],
+   "residence":[
+      "<subject> resides in <object> ."
+   ],
+   "river":[
+      "<object> is a river in <subject> ."
+   ],
+   "runwayLength":[
+      "<subject> runway is <object> m long ."
+   ],
+   "runwayName":[
+      "The name of the runway at <subject> is <object> ."
+   ],
+   "runwaySurfaceType":[
+      "<subject> runway is made of <object> ."
+   ],
+   "season":[
+      "<subject> played in the <object> season ."
+   ],
+   "senators":[
+      "<object> is a senator in <subject> ."
+   ],
+   "served as Chief of the Astronaut Office in":[
+      "<subject> served as Chief of the Astronaut Office in <object> ."
+   ],
+   "servingTemperature":[
+      "<subject> should be served <object> ."
+   ],
+   "significantBuilding":[
+      "<subject> designed <object> ."
+   ],
+   "significantProject":[
+      "<subject> projected <object> ."
+   ],
+   "similarDish":[
+      "<subject> is similar to <object> ."
+   ],
+   "spokenIn":[
+      "<subject> is spoken in <object> ."
+   ],
+   "sportsGoverningBody":[
+      "<subject> is governed by <object> ."
+   ],
+   "sportsOffered":[
+      "<subject> offers <object> ."
+   ],
+   "starring":[
+      "<object> starred in <subject> ."
+   ],
+   "state":[
+      "<subject> is located in <object> ."
+   ],
+   "status":[
+      "<subject> is <object> ."
+   ],
+   "tenant":[
+      "<object> is the tenant of <subject> ."
+   ],
+   "timeInSpace":[
+      "<subject> spend <object> in space ."
+   ],
+   "title":[
+      "<object> is <subject> ."
+   ],
+   "transportAircraft":[
+      "<object> is a transport aircraft in <subject> ."
+   ],
+   "voice":[
+      "<subject> is voiced by <object> ."
+   ],
+   "was a crew member of":[
+      "<subject> was a crew member on <object> ."
+   ],
+   "was awarded":[
+      "<subject> won <object> ."
+   ],
+   "was given the 'Technical Campus' status by":[
+      "<subject> was given the Technical Campus status by <object> ."
+   ],
+   "was selected by NASA":[
+      "<subject> was selected by NASA in <object> ."
+   ],
+   "website":[
+      "<subject> has <object> ."
+   ],
+   "year":[
+      "<subject> were introduced in <object> ."
+   ],
+   "yearOfConstruction":[
+      "<subject> was built in <object> ."
+   ],
+   "youthclub":[
+      "<subject> played youth football for <object> ."
+   ],
+   "5th_runway_SurfaceType" : [
+        "The 5th runway at <subject> is made from <object> ."
+    ],
+    "absoluteMagnitude" : [
+        "<subject> has an absolute magnitude of <object> ."
+    ],
+    "activeYearsEndDate" : [
+        "<subject> was active until <object> ."
+    ],
+    "activeYearsEndYear" : [
+        "<subject> was active until <object> ."
+    ],
+    "activeYearsStartDate" : [
+        "<subject> was active since <object> ."
+    ],
+    "activeYearsStartYear" : [
+        "<subject> was active since <object> ."
+    ],
+    "affiliations" : [
+        "<subject> is affiliated with <object> ."
+    ],
+    "apoapsis" : [
+        "<subject> has an apoapsis of <object> ."
+    ],
+    "architecture" : [
+        "<subject> was designed by <object> ."
+    ],
+    "assembly" : [
+        "<subject> was assembled in <object> ."
+    ],
+    "associatedBand/associatedMusicalArtist" : [
+        "<subject> is associated with <object> ."
+    ],
+    "associatedRocket" : [
+        "<subject> is associated with <object> ."
+    ],
+    "averageSpeed" : [
+        "<subject> has average speed <object> ."
+    ],
+    "background" : [
+        "<subject> is a <object> ."
+    ],
+    "bandMember" : [
+        "<subject> is a member of <object> ."
+    ],
+    "birthYear" : [
+        "<subject> was born in <object> ."
+    ],
+    "bodyStyle" : [
+        "<subject> is a <object> ."
+    ],
+    "broadcastedBy" : [
+        "<subject> is broadcasted by <object> ."
+    ],
+    "buildDate" : [
+        "<subject> was built in <object> ."
+    ],
+    "builder" : [
+        "<subject> was built by <object> ."
+    ],
+    "campus" : [
+        "<subject> has a campus in <object> ."
+    ],
+    "chief" : [
+        "<subject> is a chief of <object> ."
+    ],
+    "child" : [
+        "<subject> is a child of <object> ."
+    ],
+    "christeningDate" : [
+        "<subject> was christened on <object> ."
+    ],
+    "coach" : [
+        "<subject> was coached by <object> ."
+    ],
+    "colour" : [
+        "<subject> is <object> ."
+    ],
+    "comparable" : [
+        "<subject> is comparable to <object> ."
+    ],
+    "countryOrigin" : [
+        "<subject> comes from <object> ."
+    ],
+    "currentclub" : [
+        "<subject> plays in <object> ."
+    ],
+    "cylinderCount" : [
+        "<subject> has <object> cylinder s."
+    ],
+    "dateOfDeath" : [
+        "<subject> died on <object> ."
+    ],
+    "deathCause" : [
+        "<subject> died from <object> ."
+    ],
+    "deathYear" : [
+        "<subject> died in <object> ."
+    ],
+    "debutTeam" : [
+        "<subject> started his carrier in <object> ."
+    ],
+    "density" : [
+        "The density of <subject> is <object> ."
+    ],
+    "derivative" : [
+        "<subject> is a derivative of <object> ."
+    ],
+    "diameter" : [
+        "<subject> has a <object> diameter ."
+    ],
+    "discovered" : [
+        "<subject> was discovered on <object> ."
+    ],
+    "discoverer" : [
+        "<subject> was discovered by <object> ."
+    ],
+    "distributingCompany" : [
+        "<subject> is distributed by <object> ."
+    ],
+    "doctoralStudent" : [
+        "<object> is a doctoral student of <subject> ."
+    ],
+    "draftPick" : [
+        "<subject> was picked in the draft <object> ."
+    ],
+    "draftRound" : [
+        "<subject> was drafted in round <object> ."
+    ],
+    "draftTeam" : [
+        "<subject> was drafted by <object> ."
+    ],
+    "employer" : [
+        "<object> is employed by <subject> ."
+    ],
+    "engine" : [
+        "<subject> has <object> ."
+    ],
+    "epoch" : [
+        "<subject> has an epoch <object> ."
+    ],
+    "escapeVelocity" : [
+        "<subject> has escape velocity <object> ."
+    ],
+    "fate" : [
+        "<subject> spawned <object> ."
+    ],
+    "finalFlight" : [
+        "<subject> 's last flight was on <object> ."
+    ],
+    "firstAired" : [
+        "<subject> first aired on <object> ."
+    ],
+    "formerTeam" : [
+        "<subject> played formely in <object> ."
+    ],
+    "function" : [
+        "<subject> has a <object> ."
+    ],
+    "garrison" : [
+        "<subject> garrisons <object> ."
+    ],
+    "gemstone" : [
+        "<object> can be found <subject> ."
+    ],
+    "generalManager" : [
+        "<subject> is a general manager of <object> ."
+    ],
+    "has to its northwest" : [
+        "<object> is to the northwest of <subject>."
+    ],
+    "has to its southeast" : [
+        "<object> is to the southeast of <subject>."
+    ],
+    "hasDeputy" : [
+        "<object> is a deputy of <subject> ."
+    ],
+    "inOfficeWhileMonarch" : [
+        "<subject> was in office while <object> reigned ."
+    ],
+    "inOfficeWhilePresident" : [
+        "<subject> was in office while <object> was a president."
+    ],
+    "inOfficeWhilePrimeMinister" : [
+        "<subject> was in office while <object> was a prime minister."
+    ],
+    "inOfficeWhileVicePresident" : [
+        "<subject> was in office while <object> was a vice president."
+    ],
+    "instrument" : [
+        "<subject> uses <object> ."
+    ],
+    "isPartOfMilitaryConflict" : [
+        "<subject> is a part of <object> ."
+    ],
+    "launchSite" : [
+        "<subject> was launched from <object> ."
+    ],
+    "layout" : [
+        "<subject> has <object> ."
+    ],
+    "length" : [
+        "<subject> is <object> m long ."
+    ],
+    "locationCountry" : [
+        "<subject> is located in <object> ."
+    ],
+    "maidenFlight" : [
+        "<subject> was launched for the first time on <object> ."
+    ],
+    "maidenVoyage" : [
+        "<subject> sailed for the first time on <object> ."
+    ],
+    "manufacturer" : [
+        "<subject> is made by <object> ."
+    ],
+    "mascot" : [
+        "<subject> has a mascot <object> ."
+    ],
+    "mass" : [
+        "<subject> weights <object> ."
+    ],
+    "maximumTemperature" : [
+        "<subject> has a maximum temperature of <object> ."
+    ],
+    "meanTemperature" : [
+        "<subject> has a mean temperature <object> ."
+    ],
+    "militaryBranch" : [
+        "<subject> is a member of <object> ."
+    ],
+    "militaryRank" : [
+        "<subject> is a <object> ."
+    ],
+    "minimumTemperature" : [
+        "<subject> has a minimum temperature of <object> ."
+    ],
+    "modelStartYear" : [
+        "<subject> was produced since <object> ."
+    ],
+    "modelYears" : [
+        "<subject> was produced for <object> years."
+    ],
+    "musicFusionGenre" : [
+        "<object> developed from <subject>."
+    ],
+    "musicSubgenre" : [
+        "<object> is a subgenre of <subject> ."
+    ],
+    "neighboringMunicipality" : [
+        "<subject> neighbors <object> ."
+    ],
+    "numberOfRooms" : [
+        "<subject> has <object> rooms ."
+    ],
+    "office (workedAt, workedAs)" : [
+        "<subject> worked as <object> ."
+    ],
+    "orbitalPeriod" : [
+        "<subject> has an orbital period of <object> ."
+    ],
+    "origin" : [
+        "<subject> comes from <object> ."
+    ],
+    "partsType" : [
+        "<subject> has parts of type <object> ."
+    ],
+    "party" : [
+        "<subject> belongs to the <object> ."
+    ],
+    "patronSaint" : [
+        "St. <object> is a patron of <subject> ."
+    ],
+    "periapsis" : [
+        "<subject> has a periapsis of <object> ."
+    ],
+    "position" : [
+        "<subject> is <object> ."
+    ],
+    "powerType" : [
+        "<subject> is powered by <object> ."
+    ],
+    "predecessor" : [
+        "<subject> was preceded by <object> ."
+    ],
+    "productionEndYear" : [
+        "<subject> was produced until <object> ."
+    ],
+    "profession" : [
+        "<subject> is a <object> ."
+    ],
+    "protein" : [
+        "<subject> has a protein <object> ."
+    ],
+    "recordLabel" : [
+        "<subject> records under <object> ."
+    ],
+    "relatedMeanOfTransportation" : [
+        "<subject> is related to <object> ."
+    ],
+    "rocketStages" : [
+        "<subject> has <object> stages ."
+    ],
+    "rotationPeriod" : [
+        "<subject> has a rotation period of <object> ."
+    ],
+    "series" : [
+        "<subject> is a character in <object> ."
+    ],
+    "served" : [
+        "<subject> can be served <object> ."
+    ],
+    "serviceStartYear" : [
+        "<subject> stared the service in <object> ."
+    ],
+    "servingSize" : [
+        "A serving size of <subject> is <object> ."
+    ],
+    "shipBeam" : [
+        "<subject> has a <object> long beam ."
+    ],
+    "shipClass" : [
+        "<subject> is a <object> ."
+    ],
+    "shipDisplacement" : [
+        "<subject> has a displacement of <object> ."
+    ],
+    "shipDraft" : [
+        "<subject> has a draft <object> long ."
+    ],
+    "shipInService" : [
+        "<subject> was in service until <object> ."
+    ],
+    "shipLaunch" : [
+        "<subject> was launched on <object> ."
+    ],
+    "shipOrdered" : [
+        "<subject> was ordered on <object> ."
+    ],
+    "site" : [
+        "<subject> is in the <object> ."
+    ],
+    "spouse" : [
+        "<subject> is married to <object> ."
+    ],
+    "stateOfOrigin" : [
+        "<subject> comes from <object> ."
+    ],
+    "stylisticOrigin" : [
+        "<subject> is derived from <object> ."
+    ],
+    "subsidiary" : [
+        "<object> is a subsidiary of <subject> ."
+    ],
+    "successor" : [
+        "<object> is a successor of <subject>."
+    ],
+    "surfaceArea" : [
+        "<subject> has the area of <object> ."
+    ],
+    "temperature" : [
+        "<subject> has the temperature of <object> ."
+    ],
+    "topSpeed" : [
+        "<subject> has top speed <object> ."
+    ],
+    "totalLaunches" : [
+        "<subject> was launched <object>x ."
+    ],
+    "transmission" : [
+        "<subject> has <object> ."
+    ],
+    "unit" : [
+        "<subject> served in <object> ."
+    ],
+    "weight" : [
+        "<subject> weights <object> ."
+    ],
+    "wheelbase" : [
+        "The wheelbase of <subject> is <object> ."
+    ],
+    "width" : [
+        "<subject> is <object> wide."
+    ]
+
+}
