@@ -120,7 +120,6 @@ You can download the pretrained models for individual pipeline steps here:
 ```
 VERSION="filtered"
 MODULE="pc"
-
 ./train.py \
     --in_dir "data/wikifluent_${VERSION}" \
     --experiment "${MODULE}_${VERSION}" \
