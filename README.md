@@ -73,8 +73,8 @@ You can download the pretrained models for individual pipeline steps here:
 ./download_datasets.sh
 ```
 3. Preprocess the D2T datasets:
+- WebNLG
 ```
-# WebNLG
 ./preprocess.py 
     --dataset webnlg \
     --dataset_dir data/d2t/webnlg/data/v1.4/en \
@@ -83,8 +83,8 @@ You can download the pretrained models for individual pipeline steps here:
     --shuffle \
     --keep_separate_sents
 ```
+- E2E
 ```
-# E2E
 ./preprocess.py 
     --dataset e2e \
     --dataset_dir data/d2t/e2e/cleaned-data/ \
@@ -115,11 +115,12 @@ You can download the pretrained models for individual pipeline steps here:
 ```
 
 ### PC
+- `MODULE`: `pc` `pc_agg` `pc_ord_agg`
+- `VERSION`: `filtered` `full`
 ```
-# select dataset version: "wikifluent_filtered" "wikifluent_full"
 VERSION="filtered"
-# select module version: "pc" "pc_agg" "pc_ord_agg"
 MODULE="pc"
+
 ./train.py \
     --dataset "data/wikifluent_${VERSION}" \
     --experiment "${MODULE}_${VERSION}" \
@@ -194,4 +195,4 @@ VERSION="filtered"
     --gpus 1
 ```
 
-The output is stored in the respective experiment directory (`test.out`).
+The output is stored in the experiment directory (`test.out`).
