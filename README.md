@@ -104,7 +104,7 @@ You can download the pretrained models for individual pipeline steps here:
 ### Aggregation
 ```
 ./train.py \
-    --dataset "data/wikifluent_full" \
+    --in_dir "data/wikifluent_full" \
     --experiment agg \
     --module agg \
     --gpus 1 \
@@ -122,7 +122,7 @@ VERSION="filtered"
 MODULE="pc"
 
 ./train.py \
-    --dataset "data/wikifluent_${VERSION}" \
+    --in_dir "data/wikifluent_${VERSION}" \
     --experiment "${MODULE}_${VERSION}" \
     --module "$MODULE" \
     --model_name "facebook/bart-base" \
