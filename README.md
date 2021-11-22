@@ -153,8 +153,8 @@ VERSION="filtered"
 ```
 ./aggregate.py \
     --experiment agg \
-    --in_dir data/webnlg_2stage/ \
-    --out_dir data/webnlg_3stage \
+    --in_dir data/${DATASET_DECODE}_2stage \
+    --out_dir data/${DATASET_DECODE}_3stage \
     --splits test
 ```
 #### Apply PC model
