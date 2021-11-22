@@ -82,7 +82,8 @@ You can download the pretrained models for individual pipeline steps here:
     --output data/webnlg_1stage  \
     --shuffle \
     --keep_separate_sents
-
+```
+```
 # E2E
 ./preprocess.py 
     --dataset e2e \
@@ -117,10 +118,8 @@ You can download the pretrained models for individual pipeline steps here:
 ```
 # select dataset version: "wikifluent_filtered" "wikifluent_full"
 VERSION="filtered"
-
 # select module version: "pc" "pc_agg" "pc_ord_agg"
 MODULE="pc"
-
 ./train.py \
     --dataset "data/wikifluent_${VERSION}" \
     --experiment "${MODULE}_${VERSION}" \
