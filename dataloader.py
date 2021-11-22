@@ -39,7 +39,7 @@ class D2TDataModule(pl.LightningDataModule):
 
 
     def setup(self, stage):
-        data_dir = os.path.join(self.args.dataset)
+        data_dir = self.args.in_dir
 
         if stage == "fit":
             splits = ["train", "dev"]

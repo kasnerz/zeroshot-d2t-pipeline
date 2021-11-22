@@ -15,6 +15,8 @@ from model import AggTrainingModule
 from dataloader import AggDataModule
 from inference import AggInferenceModule
 
+logger = logging.getLogger(__name__)
+
 class AggModule:
     def __init__(self, model_path, separator):
         self.model = AggInferenceModule(args, model_path=model_path)
@@ -28,7 +30,7 @@ class AggModule:
             j = json.load(in_file)
 
             for i, example in enumerate(j["data"]):
-                sents = example["text"]
+                sents = example["sents"]
 
                 out = []
 
@@ -41,17 +43,20 @@ class AggModule:
 
                         if j < len(seps) and seps[j] == 1:
                             out.append(self.separator)
-                print(i)
-                print(out)
-                print("================")
+                
+                if i % 100 == 0:
+                    logger.info(f"{i} examples aggregated")
+                
                 example_sorted = {
-                    "text" : " ".join(out),
-                    "labels" : example["labels"]
+                    "sents" : " ".join(out),
+                    "text" : example["text"]
                 }
                 output["data"].append(example_sorted)
 
         with open(os.path.join(out_filename), "w") as f:
             json.dump(output, f, indent=4, ensure_ascii=False)
+
+        logger.info("Aggregation finished.")
 
     def aggregate_dataset_eval(self, in_filename):
         correct_agg = 0
@@ -65,7 +70,7 @@ class AggModule:
             j = json.load(in_file)
             for i, example in enumerate(j["data"]):
                 total += 1
-                sents = example["text"]
+                sents = example["sents"]
 
                 if len(sents) == 1:
                     # skip trivial examples
@@ -74,17 +79,17 @@ class AggModule:
                 out = []
                 seps = self.model.predict(sents)
 
-                if seps in example['labels']:
+                if seps in example['text']:
                     correct_agg += 1
 
                 random_seps = list(np.random.randint(2, size=len(seps)))
 
-                if random_seps in example['labels']:
+                if random_seps in example['text']:
                     correct_random += 1
 
                 for j, (s, r) in enumerate(zip(seps, random_seps)):
                     total_pos += 1
-                    gold_pos = [e[j] for e in example['labels']]
+                    gold_pos = [e[j] for e in example['text']]
 
                     if s in gold_pos:
                         correct_agg_perpos += 1
@@ -109,7 +114,7 @@ if __name__ == "__main__":
     parser.add_argument("--in_dir", type=str, required=True,
         help="Directory with the dataset to sort.")
     parser.add_argument("--out_dir", type=str, default=None,
-        help="Output directory (default name uses a suffix \"_agg\")")
+        help="Output directory")
     parser.add_argument("--experiment", type=str, required=True,
         help="Experiment name.")
     parser.add_argument("--seed", default=42, type=int,
@@ -142,11 +147,7 @@ if __name__ == "__main__":
     dam = AggModule(model_path,
         args.separator)
 
-    if args.out_dir is None:
-        out_dir = args.in_dir + "_agg"
-    else:
-        out_dir = args.out_dir
-
+    out_dir = args.out_dir
     os.makedirs(out_dir, exist_ok=True)
 
     for split in args.splits:

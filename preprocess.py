@@ -86,8 +86,8 @@ class Preprocessor:
 
             for order, agg_list in order_to_agg.items():
                 example = {
-                    "text" : sentences,
-                    "labels" : list(set(agg_list))
+                    "sents" : sentences,
+                    "sep" : list(set(agg_list))
                 }
                 examples.append(example)
 
@@ -110,8 +110,8 @@ class Preprocessor:
 
         for lex in entry.lexs:
             example = {
-                "text" : inp,
-                "labels" : lex["text"]
+                "sents" : inp,
+                "text" : lex["text"]
             }
             examples.append(example)
 

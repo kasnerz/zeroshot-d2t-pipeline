@@ -10,8 +10,15 @@ import torch
 import pytorch_lightning as pl
 
 from utils.tokenizer import Tokenizer
-from inference import PCInferenceModule
-from dataloader import D2TDataModule, PCDataModule
+from inference import (
+    PCInferenceModule
+)
+from dataloader import (
+    D2TDataModule,
+    PCDataModule,
+    PCAggDataModule,
+    PCOrdAggDataModule
+)
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
 logger = logging.getLogger(__name__)
@@ -25,12 +32,18 @@ def parse_args(args=None):
         help="Base directory of the experiment.")
     parser.add_argument("--experiment", type=str, required=True,
         help="Experiment name.")
+    parser.add_argument("--module", type=str, required=True,
+        help="Name of the pipeline module to be used for decoding:\
+            pc = paragraph compression \
+            pc_agg = paragraph compression + aggregation \
+            pc_ord_agg = paragraph compression + ordering + aggregation."
+        )
     parser.add_argument("--seed", default=42, type=int,
         help="Random seed.")
-    parser.add_argument("--batch_size", default=1, type=int,
+    parser.add_argument("--batch_size", default=32, type=int,
         help="Batch size used for decoding.")
-    parser.add_argument("--dataset", type=str, required=True,
-        help="Dataset name (webnlg / e2e / ...).")
+    parser.add_argument("--in_dir", type=str, required=True,
+        help="Input directory with the data.")
     parser.add_argument("--split", type=str, required=True,
         help="Split to decode (dev / test).")
     parser.add_argument("--out_filename", type=str, default=None,
@@ -43,8 +56,6 @@ def parse_args(args=None):
         help="Beam size used for decoding.")
     parser.add_argument("--max_length", type=int, default=1024,
         help="Maximum number of tokens per example")
-    parser.add_argument("--prefix", type=str, default=None,
-        help="Prefix to be appended to input (after prompt)")
     parser.add_argument("--test_suffix", type=str, default="",
         help="Test file suffix (e.g. _seen)")
 
@@ -64,8 +75,17 @@ if __name__ == "__main__":
 
     model_path = os.path.join(args.exp_dir, args.experiment, args.checkpoint)
     out_path = os.path.join(args.exp_dir, args.experiment, f"{args.split}.out")
+
     di = PCInferenceModule(args, model_path=model_path)
-    dm = PCDataModule(args, model_name=di.model_name)
+
+    data_module = {
+        "pc" : PCDataModule,
+        "pc_agg" : PCAggDataModule,
+        "pc_ord_agg" : PCOrdAggDataModule,
+    }[args.module]
+
+    dm = data_module(args, model_name=di.model_name)
+    dm.prepare_data()
     dm.setup('predict')
 
     trainer = pl.Trainer.from_argparse_args(args)

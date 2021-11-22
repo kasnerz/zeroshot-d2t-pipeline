@@ -38,28 +38,41 @@ pip install -r requirements.txt
 ### Interactive Mode
 You can also use any of the models in interactive mode (with manual input): see `interact.py`. -->
 
-**Warning: The instructions and the code are not complete yet, finalizing in progress.**
+**Note: The instructions and the code are being improved. We will finalize the repository after the anonymization period.**
 
 ## Requirements
 The pipeline is built using Python 3, PyTorch Lightning 1.2.5 and HuggingFace Transformers 4.12. 
 
 See `requirements.txt` for the full list of requirements.
 
+
 ## WikiFluent Corpus
 See the `wikifluent` directory for instructions on building the WikiFluent corpus. Alternatively, you can download the generated corpus:
 
 - https://ufile.io/swf75rip
 
+*Note: the link is temporary for the anonymization period. We will add permanent links as soon as possible.*
+
 The *filtered* version of the dataset contains only examples which contain no omissions or hallucinations according to `roberta-mnli`.
+
+## Pretrained Models
+You can download the pretrained models for individual pipeline steps here:
+
+- **ordering**: https://ufile.io/hrz5yq8l  (see https://github.com/airKlizz/passage-ordering)
+- **aggregation**: https://ufile.io/h9mp3wzo
+- **paragraph compression (pc-filtered)**: https://ufile.io/4uvkbup5
+
+*Note: the links are temporary for the anonymization period. We will add permanent links as soon as possible. We will also upload the full variety of the pretrained models, including the non-filtered, 2-stage and 1-stage models.*
 
 
 ## Preprocessing
 
-
+1.  Download the [WikiFluent corpus](https://ufile.io/swf75rip) and place it in the `data` directory.
+2. Download the D2T datasets:
 ```
 ./download_datasets.sh
 ```
-
+3. Preprocess the D2T datasets:
 ```
 # WebNLG
 ./preprocess.py 
@@ -85,10 +98,12 @@ The *filtered* version of the dataset contains only examples which contain no om
 ### Ordering
 *Integration of the ordering module is in progress. See https://github.com/airKlizz/passage-ordering for the original code.*
 
+*In the meantime, you can download the pretrained model here - https://ufile.io/hrz5yq8l.*
+
 ### Aggregation
 ```
 ./train.py \
-    --dataset data/wikifluent_full \
+    --dataset "data/wikifluent_full" \
     --experiment agg \
     --module agg \
     --gpus 1 \
@@ -107,7 +122,7 @@ VERSION="filtered"
 MODULE="pc"
 
 ./train.py \
-    --dataset "wikifluent_${VERSION}" \
+    --dataset "data/wikifluent_${VERSION}" \
     --experiment "${MODULE}_${VERSION}" \
     --module "$MODULE" \
     --model_name "facebook/bart-base" \
@@ -119,20 +134,65 @@ MODULE="pc"
 
 
 ## Decoding
+There are 3 possible pipelines for generating the text from data: 3-stage, 2-stage, or 1-stage (see the paper for detailed description).
+
+```
+DATASET_DECODE="webnlg"
+VERSION="filtered"
+```
+
 
 ### 3-stage
 
 #### Order data
-TODO integrate
+*Integration of the ordering module is in progress. Refer to https://github.com/airKlizz/passage-ordering for the original code.* 
+
+*In the meantime, our script `utils/order.py` can be used in the top level directory of the [repository](https://github.com/airKlizz/passage-ordering) for ordering the dataset.*
 
 #### Aggregate data
-#### Apply PC
+```
+./aggregate.py \
+    --experiment agg \
+    --in_dir data/webnlg_2stage/ \
+    --out_dir data/webnlg_3stage \
+    --splits test
+```
+#### Apply PC model
+```
+./decode.py \
+    --experiment "pc_${VERSION}" \
+    --module pc \
+    --in_dir data/${DATASET_DECODE}_3stage \
+    --split test \
+    --gpus 1
+```
 
 ### 2-stage
 #### Order data
-TODO integrate
+*Integration of the ordering module is in progress. Refer to https://github.com/airKlizz/passage-ordering for the original code.* 
 
-#### Apply PC+agg
+*In the meantime, our script `utils/order.py` can be used in the top level directory of the [repository](https://github.com/airKlizz/passage-ordering) for ordering the dataset.*
+
+
+#### Apply PC+agg model
+```
+./decode.py \
+    --experiment "pc_agg_${VERSION}" \
+    --module pc_agg \
+    --in_dir data/${DATASET_DECODE}_2stage \
+    --split test \
+    --gpus 1
+```
 
 ### 1-stage
-#### Apply PC+ord+agg
+#### Apply PC+ord+agg model
+```
+./decode.py \
+    --experiment "pc_ord_agg_${VERSION}" \
+    --module pc_ord_agg \
+    --in_dir data/${DATASET_DECODE}_1stage \
+    --split test \
+    --gpus 1
+```
+
+The output is stored in the respective experiment directory (`test.out`).

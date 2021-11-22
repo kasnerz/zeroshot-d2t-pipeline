@@ -41,11 +41,11 @@ def parse_args(args=None):
         help="Name of the model from the Huggingface Transformers library.")
     parser.add_argument("--model_path", type=str, default=None,
         help="Path to the saved checkpoint to be loaded.")
-    parser.add_argument("--dataset", type=str, required=True,
-        help="Dataset name (webnlg / e2e / ...).")
+    parser.add_argument("--in_dir", type=str, required=True,
+        help="Input directory with the data.")
     parser.add_argument("--batch_size", type=int, default=8,
         help="Batch size for finetuning the model")
-    parser.add_argument("--output_dir", type=str, default="experiments",
+    parser.add_argument("--out_dir", type=str, default="experiments",
         help="Output directory")
     parser.add_argument("--checkpoint_name", type=str, default="model",
         help="Name of the checkpoint (default='model')")
@@ -103,11 +103,11 @@ if __name__ == '__main__':
         if args.resume_training:
             logger.error("Model path not specified, training not resumed.")
         
-    ckpt_output_dir = os.path.join(args.output_dir,
+    ckpt_out_dir = os.path.join(args.out_dir,
         args.experiment
     )
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
-        dirpath=ckpt_output_dir,
+        dirpath=ckpt_out_dir,
         filename=args.checkpoint_name,
         save_top_k=1,
         verbose=True,

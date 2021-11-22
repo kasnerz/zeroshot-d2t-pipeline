@@ -155,11 +155,6 @@ class AggTrainingModule(D2TTrainingModule):
         raise NotImplementedError
 
 
-class OrdTrainingModule(D2TTrainingModule):
-    def __init__(self, args, **kwargs):
-        super().__init__(args, **kwargs)
-
-
 class PCTrainingModule(D2TTrainingModule):
     def __init__(self, args, **kwargs):
         super().__init__(args, **kwargs)

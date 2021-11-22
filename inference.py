@@ -18,7 +18,11 @@ from data import get_dataset_class
 from collections import defaultdict
 from datasets import load_dataset, dataset_dict, Dataset
 
-from model import D2TTrainingModule, AggTrainingModule, PCTrainingModule
+from model import (
+    D2TTrainingModule, 
+    AggTrainingModule, 
+    PCTrainingModule,
+)
 from model import add_special_tokens
 from transformers import (
     AutoConfig,
@@ -29,17 +33,15 @@ from transformers import (
 logger = logging.getLogger(__name__)
 
 class D2TInferenceModule:
-    def __init__(self, args, model_path):
+    def __init__(self, args, model_path, training_module_cls):
         self.args = args
-        self.model = D2TTrainingModule.load_from_checkpoint(model_path)
+        self.model = training_module_cls.load_from_checkpoint(model_path)
         self.model.freeze()
         logger.info(f"Loaded model from {model_path}")
 
         self.model_name = self.model.model.name_or_path
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name,
                                                        use_fast=True)
-        add_special_tokens(self.tokenizer, None)
-
 
     def predict(self, s, beam_size=1):
         inputs = self.tokenizer(s, return_tensors='pt')
@@ -69,16 +71,9 @@ class D2TInferenceModule:
         return sentences
 
 
-class AggInferenceModule:
+class AggInferenceModule(D2TInferenceModule):
     def __init__(self, args, model_path):
-        self.args = args
-        self.model = AggTrainingModule.load_from_checkpoint(model_path)
-        self.model.freeze()
-        logger.info(f"Loaded model from {model_path}")
-
-        self.model_name = self.model.model.name_or_path
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name,
-                                                       use_fast=True)
+        super().__init__(args, model_path=model_path, training_module_cls=AggTrainingModule)
 
 
     def predict(self, sents, beam_size=1):
@@ -105,12 +100,6 @@ class AggInferenceModule:
 
 class PCInferenceModule(D2TInferenceModule):
     def __init__(self, args, model_path):
-        self.args = args
-        self.model = PCTrainingModule.load_from_checkpoint(model_path)
-        self.model.freeze()
-        logger.info(f"Loaded model from {model_path}")
+        super().__init__(args, model_path=model_path, training_module_cls=PCTrainingModule)
 
-        self.model_name = self.model.model.name_or_path
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name,
-                                                       use_fast=True)
         add_special_tokens(self.tokenizer, None)
