@@ -97,9 +97,17 @@ You can download the pretrained models for individual pipeline steps here:
 ## Training
 
 ### Ordering
-*Integration of the ordering module is in progress. See https://github.com/airKlizz/passage-ordering for the original code.*
-
-*In the meantime, you can download the pretrained model here - https://ufile.io/hrz5yq8l.*
+```
+./train.py \
+    --in_dir "data/wikifluent_full" \
+    --experiment ord \
+    --module ord \
+    --gpus 1 \
+    --model_name facebook/bart-base \
+    --accumulate_grad_batches 4 \
+    --max_epochs 1 \
+    --val_check_interval 0.05
+```
 
 ### Aggregation
 ```

@@ -59,15 +59,23 @@ class D2TDataModule(pl.LightningDataModule):
         dataset = {}
 
         for split in raw_dataset.keys():
+            columns = ["attention_mask", "input_ids"]
+            columns_to_remove = ["sents", "sep"]
+
+            if "text" in raw_dataset[split].features.keys():
+                columns.append("labels")
+                columns_to_remove.append("text")
+
             dataset[split] = raw_dataset[split].map(
                 self._convert_to_features,
+                remove_columns=columns_to_remove,
                 batched=True
             )
             dataset[split].set_format(
                 type="torch",
-                columns=[
-                    "attention_mask", "input_ids", "labels"
-                ])
+                columns=columns
+            )
+
         return dataset
 
 
@@ -113,11 +121,114 @@ class D2TDataModule(pl.LightningDataModule):
         return batch_collated
 
 
-# TODO
 class OrdDataModule(D2TDataModule):
     def __init__(self, args, model_name=None):
         super().__init__(args, model_name)
 
+    def train_dataloader(self):
+        return DataLoader(
+            self.dataset['train'],
+            batch_size=self.args.batch_size,
+            num_workers=self.args.max_threads,
+        )
+
+    def val_dataloader(self):
+        return DataLoader(self.dataset['dev'],
+             batch_size=self.args.batch_size,
+             num_workers=self.args.max_threads,
+        )
+
+    def test_dataloader(self):
+        return DataLoader(self.dataset['test'],
+          batch_size=self.args.batch_size,
+          num_workers=self.args.max_threads,
+        )
+
+    def _process_raw_dataset(self, raw_dataset):
+        dataset = {}
+
+        for split in raw_dataset.keys():
+            columns = ["input_ids", "attention_mask", "decoder_input_ids", "decoder_attention_mask"]
+            columns_to_remove = ["sents", "sep"]
+
+            if "text" in raw_dataset[split].features.keys():
+                columns.append("labels")
+                columns_to_remove.append("text")
+
+            dataset[split] = raw_dataset[split].map(
+                self._convert_to_features,
+                remove_columns=columns_to_remove,
+                batched=True
+            )
+            dataset[split].set_format(
+                type="torch",
+                columns=columns
+            )
+
+        return dataset
+
+    def _convert_to_features(self, example_batch, indices=None):
+        bos = self.tokenizer.bos_token
+        eos = self.tokenizer.eos_token
+
+        sents_batch = example_batch["sents"]
+        shuffled_sents_batch = []
+        labels_batch = []
+
+        for sents in sents_batch:
+            permutation = np.random.permutation(len(sents))
+            shuffled_sents = np.array(sents)[permutation].tolist()
+            shuffled_sents_batch.append(shuffled_sents)
+            labels_batch.append(np.argsort(permutation).tolist())
+
+        encoder = [f" {eos}{bos} ".join(sentences) + f" {eos}{bos}" for sentences in shuffled_sents_batch]
+        decoder = [f" {eos}{bos} " + f" {eos}{bos} ".join(sentences) for sentences in sents_batch]
+        labels = [label + [len(label)] for label in labels_batch]
+
+        encoder_inputs = self.tokenizer(
+            encoder,
+            max_length=self.args.max_length,
+            padding="max_length",
+            truncation=True,
+            return_tensors="pt",
+        )
+        decoder_inputs = self.tokenizer(
+            decoder,
+            max_length=self.args.max_length,
+            padding="max_length",
+            truncation=True,
+            return_tensors="pt",
+        )
+
+        encoder_sequence_idx = [
+            ((ids == self.tokenizer.eos_token_id).nonzero()).squeeze().tolist() for ids in encoder_inputs["input_ids"]
+        ]
+        decoder_sequence_idx = [
+            ((ids == self.tokenizer.eos_token_id).nonzero()).squeeze().tolist() for ids in decoder_inputs["input_ids"]
+        ]
+
+        assert len(encoder_sequence_idx) == len(decoder_sequence_idx)
+
+        bsz = len(labels)
+        # Default labels is -100 to ignore index (See https://pytorch.org/docs/stable/nn.html#crossentropyloss)
+        extend_labels = torch.ones((bsz, self.args.max_length), dtype=torch.long) * -100
+        for b_idx in range(bsz):
+            i = 0
+            for d_idx in decoder_sequence_idx[b_idx]:
+                try:
+                    extend_labels[b_idx, d_idx] = encoder_sequence_idx[b_idx][labels[b_idx][i]]
+                except:
+                    pass
+                i += 1
+        
+        encodings = {
+            "input_ids": encoder_inputs["input_ids"].tolist(),
+            "attention_mask": encoder_inputs["attention_mask"].tolist(),
+            "decoder_input_ids": decoder_inputs["input_ids"].tolist(),
+            "decoder_attention_mask": decoder_inputs["attention_mask"].tolist(),
+            "labels": extend_labels.tolist(),
+        }
+        return encodings
 
 
 

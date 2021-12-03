@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
 from model import (
-    D2TTrainingModule, 
+    D2TTrainingModule,
+    OrdTrainingModule,
     AggTrainingModule,
     PCTrainingModule
 )
 from dataloader import (
-    D2TDataModule, 
+    D2TDataModule,
+    OrdDataModule,
     AggDataModule,
     PCDataModule,
     PCAggDataModule, 
@@ -69,7 +71,7 @@ if __name__ == '__main__':
     logger.info(args)
 
     training_module = {
-        "ord" : None,    #TODO
+        "ord" : OrdTrainingModule,
         "agg" : AggTrainingModule,
         "pc" : PCTrainingModule,    # training module is the same for PC* modules
         "pc_agg" : PCTrainingModule,
@@ -77,7 +79,7 @@ if __name__ == '__main__':
     }[args.module]
 
     data_module = {
-        "ord" : None,   #TODO
+        "ord" : OrdDataModule,
         "agg" : AggDataModule,
         "pc" : PCDataModule,
         "pc_agg" : PCAggDataModule,

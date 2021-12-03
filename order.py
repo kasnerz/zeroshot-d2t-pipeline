@@ -3,13 +3,19 @@
 import os
 import json
 import argparse
-from use import OrderingModel
-from training.scripts.models.bart_simple import BartForSequenceOrdering
+import logging
 import numpy as np
+from model import OrdTrainingModule
+from inference import OrdInferenceModule
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
+logger = logging.getLogger(__name__)
+
+
 
 class D2TOrderingModule:
-    def __init__(self, ckpt_dir, model_name):
-        self.model = OrderingModel(BartForSequenceOrdering, ckpt_dir, model_name)
+    def __init__(self, args, model_path):
+        self.model = OrdInferenceModule(args, model_path=model_path)
 
     def order_dataset(self, in_filename, out_filename, join_sents):
         output = {
@@ -22,10 +28,10 @@ class D2TOrderingModule:
                 passages = example["sents"]
                 passages_ordered = self.model.order(passages)
 
-                print(i)
-                print(passages)
-                print(passages_ordered)
-                print("================")
+                logger.info(i)
+                logger.info(passages)
+                logger.info(passages_ordered)
+                logger.info("================")
 
                 if join_sents:
                     passages_ordered = " ".join(passages_ordered)
@@ -53,20 +59,25 @@ class D2TOrderingModule:
                 # indices = np.random.permutation(len(passages))
                 indices = self.model.order_indices(passages)
 
-                print(i)
-                print(passages)
-                print(indices)
-                print("================")
+                logger.info(i)
+                logger.info(passages)
+                logger.info(indices)
+                logger.info("================")
 
                 f.write(" ".join([str(x) for x in indices]) + "\n")
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+
+    parser.add_argument("--exp_dir", default="experiments", type=str,
+        help="Base directory of the experiment.")
+    parser.add_argument("--experiment", type=str, required=True,
+        help="Experiment name.")
+    parser.add_argument("--checkpoint", type=str, default="model.ckpt",
+        help="Override the default checkpoint name 'model.ckpt'.")
     parser.add_argument("--model_name", type=str, default="facebook/bart-base",
         help="Name of the pretrained model.")
-    parser.add_argument("--model_dir", type=str, default="models/bart-base-simple-wikifp",
-        help="Directory with the model checkpoints")
     parser.add_argument("--in_dir", type=str, required=True,
         help="Directory with the dataset to sort.")
     parser.add_argument("--out_dir", type=str, default=None,
@@ -77,28 +88,18 @@ if __name__ == '__main__':
                     help='Output only permutation indices')
     parser.add_argument('--join_sents', action="store_true",
                     help='Join sentences to a single string on the output.')
-    parser.add_argument('--last_ckpt', action="store_true",
-                    help='Use the directory with last checkpoint.')
     parser.add_argument("--seed", type=str, default=42,
         help="Random seed")
+    parser.add_argument("--max_length", type=int, default=1024,
+        help="Maximum number of tokens per example")
     args = parser.parse_args()
 
-    model_dir = args.model_dir
-
-    if args.last_ckpt:
-        last_ckpt_dir = list(sorted(os.listdir(model_dir)))[-1]
-        model_dir = os.path.join(model_dir, last_ckpt_dir)
-
-    dom = D2TOrderingModule(
-        ckpt_dir=model_dir, 
-        model_name=args.model_name
-    )
+    model_path = os.path.join(args.exp_dir, args.experiment, args.checkpoint)
+    dom = D2TOrderingModule(args, model_path=model_path)
     out_dir = args.out_dir
-
     os.makedirs(out_dir, exist_ok=True)
 
     for split in args.splits:
-
         if args.indices_only:
             dom.order_dataset_indices(
                 in_filename=os.path.join(args.in_dir, f"{split}.json"),

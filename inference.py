@@ -20,6 +20,7 @@ from datasets import load_dataset, dataset_dict, Dataset
 
 from model import (
     D2TTrainingModule, 
+    OrdTrainingModule, 
     AggTrainingModule, 
     PCTrainingModule,
 )
@@ -69,6 +70,46 @@ class D2TInferenceModule:
         )
             
         return sentences
+
+
+class OrdInferenceModule(D2TInferenceModule):
+    def __init__(self, args, model_path):
+        super().__init__(args, model_path=model_path, training_module_cls=OrdTrainingModule)
+
+    def __call__(self, sequences, decoder_start_token_ids=[0, 2], num_beams=1):
+        inputs = self.tokenizer(
+            f" {self.tokenizer.eos_token}{self.tokenizer.bos_token} ".join(sequences) \
+                + f" {self.tokenizer.eos_token}{self.tokenizer.bos_token}",
+            truncation=True,
+            max_length=self.args.max_length,
+            return_tensors="pt",
+        )
+        output = self.model.order(
+            input_ids=inputs["input_ids"],
+            attention_mask=inputs["attention_mask"],
+            decoder_start_token_ids=decoder_start_token_ids,
+            num_beams=num_beams,
+        )
+        output = output[0]
+        output.remove(max(output))
+        for i in range(len(sequences)):
+            if i not in output:
+                output.append(i)
+        assert len(output) == len(sequences)
+        return output
+
+    def order(self, sequences, decoder_start_token_ids=[0, 2], num_beams=1):
+        output = self(sequences, decoder_start_token_ids, num_beams)
+        ordered_sequences = []
+        for idx in output:
+            ordered_sequences.append(sequences[idx])
+        return ordered_sequences
+
+
+    def order_indices(self, sequences, decoder_start_token_ids=[0, 2], num_beams=1):
+        output = self(sequences, decoder_start_token_ids, num_beams)
+        return np.argsort(output)
+
 
 
 class AggInferenceModule(D2TInferenceModule):
