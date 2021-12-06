@@ -26,7 +26,10 @@ class D2TOrderingModule:
 
             for i, example in enumerate(j["data"]):
                 passages = example["sents"]
-                passages_ordered = self.model.order(passages)
+                if len(passages) == 1:
+                    passages_ordered = passages
+                else:
+                    passages_ordered = self.model.order(passages)
 
                 logger.info(i)
                 logger.info(passages)
@@ -111,4 +114,3 @@ if __name__ == '__main__':
                 out_filename=os.path.join(out_dir, f"{split}.json"),
                 join_sents=args.join_sents
             )
-

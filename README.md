@@ -16,7 +16,7 @@ The text is generated using a three-step pipeline:
 2) fact aggregation
 3) paragraph compression
 
-<!--## Quickstart
+<!-- ## Quickstart
 TODO
  ### Pipeline
 1. Install the requirements:
@@ -34,9 +34,7 @@ pip install -r requirements.txt
 4. Run the pipeline:
 ```
 ./run_pipeline.sh --dataset webnlg --gpus 1
-```
-### Interactive Mode
-You can also use any of the models in interactive mode (with manual input): see `interact.py`. -->
+``` -->
 
 **Note: The instructions and the code are being improved. We will finalize the repository after the anonymization period.**
 
@@ -65,6 +63,31 @@ You can download the pretrained models for individual pipeline steps here:
 *Note: the links are temporary for the anonymization period. We will add permanent links as soon as possible. We will also upload the full variety of the pretrained models, including the non-filtered, 2-stage and 1-stage models.*
 
 
+### Interactive Mode
+Tip: you can use any of the models in interactive mode (with manual input from the command line):.
+
+Examples:
+```
+./interact.py --experiment ord
+[In]: Blue Spice is near Burger King. Blue Spice has average customer rating. Blue Spice is a coffee shop. 
+[Out]:
+['Blue Spice is a coffee shop.',
+ 'Blue Spice is near Burger King.',
+ 'Blue Spice has average customer rating.']
+
+./interact.py --experiment agg
+[In]: Blue Spice is a coffee shop. Blue Spice is near Burger King. Blue Spice has average customer rating.
+[Out]:
+[0, 1] # 0=fuse, 1=separate
+
+./interact.py --experiment pc_filtered
+[In]: Blue Spice is a coffee shop. Blue Spice is near Burger King. <sep> Blue Spice has average customer rating.
+[Out]:
+['Blue Spice is a coffee shop near Burger King. It has average customer '
+ 'rating.']
+```
+
+
 ## Preprocessing
 
 1.  Download the [WikiFluent corpus](https://ufile.io/swf75rip) and place it in the `data` directory.
@@ -72,7 +95,7 @@ You can download the pretrained models for individual pipeline steps here:
 ```
 ./download_datasets.sh
 ```
-3. Preprocess the D2T datasets:
+3. Preprocess the D2T datasets. This step will parse the raw D2T datasets to prepare the data for evaluation (the data is not needed for the training).
 - WebNLG
 ```
 ./preprocess.py 
@@ -97,6 +120,9 @@ You can download the pretrained models for individual pipeline steps here:
 ## Training
 
 ### Ordering
+The ordering model is trained on deshuffling the sentences from the wikifluent-*full* corpus. The model is needed for the 2-stage and 3-stage versions of the pipeline.
+
+The implementation of the ordering model is based on the code from https://github.com/airKlizz/passage-ordering. 
 ```
 ./train.py \
     --in_dir "data/wikifluent_full" \
@@ -110,6 +136,8 @@ You can download the pretrained models for individual pipeline steps here:
 ```
 
 ### Aggregation
+The aggregation model is trained on aggregating the (ordered) sentences from the wikifluent-*full* corpus.  The model is needed for the 3-stage version of the pipeline.
+
 ```
 ./train.py \
     --in_dir "data/wikifluent_full" \
@@ -122,9 +150,15 @@ You can download the pretrained models for individual pipeline steps here:
     --val_check_interval 0.05
 ```
 
-### PC
-- `MODULE`: `pc` `pc_agg` `pc_ord_agg`
-- `VERSION`: `filtered` `full`
+### Paragraph Compression
+The paragraph compression (PC) model is trained on compressing (=fusing and rephrasing) the paragraphs from the wikifluent corpus. The following options are available:
+- `MODULE`: 
+  - `pc` - paragraph compression (used in the **3-stage** pipeline)
+  - `pc_agg` - aggregation + paragraph compression (used in the **2-stage** pipeline)
+  - `pc_ord_agg` - ordering + aggregation + paragraph compression (used in the **1-stage** pipeline)
+- `VERSION`:
+  - `full` - full version of the wikifluent dataset
+  - `filtered` - filtered version of the wikifluent dataset
 ```
 VERSION="filtered"
 MODULE="pc"
@@ -143,20 +177,26 @@ MODULE="pc"
 ## Decoding
 There are 3 possible pipelines for generating the text from data: 3-stage, 2-stage, or 1-stage (see the paper for detailed description).
 
-```
-DATASET_DECODE="webnlg"
-VERSION="filtered"
-```
-
+To use the commands below, set the environment variables to one of the following:
+- `DATASET_DECODE`
+  - `webnlg` - WebNLG dataset
+  - `e2e` - E2E dataset
+- `VERSION`:
+  - `full` - module trained on the full version of the wikifluent dataset
+  - `filtered` - module trained on the filtered version of the wikifluent dataset
 
 ### 3-stage
+The following commands will run the 3-stage pipeline:
+#### Order the data
+```
+./order.py \
+    --experiment ord \
+    --in_dir data/${DATASET_DECODE}_1stage \
+    --out_dir data/${DATASET_DECODE}_2stage \
+    --splits test
+```
 
-#### Order data
-*Integration of the ordering module is in progress. Refer to https://github.com/airKlizz/passage-ordering for the original code.* 
-
-*In the meantime, our script `utils/order.py` can be used in the top level directory of the [repository](https://github.com/airKlizz/passage-ordering) for ordering the dataset.*
-
-#### Aggregate data
+#### Aggregate the data
 ```
 ./aggregate.py \
     --experiment agg \
@@ -164,7 +204,7 @@ VERSION="filtered"
     --out_dir data/${DATASET_DECODE}_3stage \
     --splits test
 ```
-#### Apply PC model
+#### Apply the PC model
 ```
 ./decode.py \
     --experiment "pc_${VERSION}" \
@@ -175,13 +215,17 @@ VERSION="filtered"
 ```
 
 ### 2-stage
-#### Order data
-*Integration of the ordering module is in progress. Refer to https://github.com/airKlizz/passage-ordering for the original code.* 
+The following commands will run the 2-stage pipeline:
+#### Order the data
+```
+./order.py \
+    --experiment ord \
+    --in_dir data/${DATASET_DECODE}_1stage \
+    --out_dir data/${DATASET_DECODE}_2stage \
+    --splits test
+```
 
-*In the meantime, our script `utils/order.py` can be used in the top level directory of the [repository](https://github.com/airKlizz/passage-ordering) for ordering the dataset.*
-
-
-#### Apply PC+agg model
+#### Apply the PC+agg model
 ```
 ./decode.py \
     --experiment "pc_agg_${VERSION}" \
@@ -192,7 +236,8 @@ VERSION="filtered"
 ```
 
 ### 1-stage
-#### Apply PC+ord+agg model
+The following command will run the 1-stage pipeline:
+#### Apply the PC+ord+agg model
 ```
 ./decode.py \
     --experiment "pc_ord_agg_${VERSION}" \
@@ -202,4 +247,4 @@ VERSION="filtered"
     --gpus 1
 ```
 
-The output is stored in the experiment directory (`test.out`).
+The output is always stored in the experiment directory of the pc model (default output name is `{split}.out`).

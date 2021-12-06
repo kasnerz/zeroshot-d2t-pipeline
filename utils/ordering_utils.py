@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Code based on https://github.com/airKlizz/passage-ordering/blob/main/training/scripts/models/ordering_utils.py
+"""
+
 import logging
 from typing import Iterable, List, Optional, Tuple, Union
 

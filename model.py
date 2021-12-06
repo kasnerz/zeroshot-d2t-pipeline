@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
 
+"""
+Code for individual models.
+
+Code for the ordering model is based on https://github.com/airKlizz/passage-ordering
+
+If you use the ordering model, please cite also:
+@inproceedings{calizzano2021ordering,
+  title={Ordering sentences and paragraphs with pre-trained encoder-decoder transformers and pointer ensembles},
+  author={Calizzano, R{\'e}mi and Ostendorff, Malte and Rehm, Georg},
+  booktitle={Proceedings of the 21st ACM Symposium on Document Engineering},
+  pages={1--9},
+  year={2021}
+}
+"""
+
 import numpy as np
 import os
 import logging
@@ -135,11 +150,9 @@ class D2TTrainingModule(pl.LightningModule):
 
         return parser
 
-
-
-"""
-TODO attribution: https://github.com/airKlizz/passage-ordering
-"""
+# =============================
+# Start of code based on https://github.com/airKlizz/passage-ordering/blob/main/training/scripts/models/bart_simple.py
+# =============================
 class PointerHead(nn.Module):
     """Head for pointer ordering task."""
 
@@ -182,6 +195,7 @@ class PointerHead(nn.Module):
 
         return attn_weights
 
+
 @dataclass
 class Seq2SeqOrderingOutput(ModelOutput):
     loss: Optional[torch.FloatTensor]
@@ -194,14 +208,12 @@ class Seq2SeqOrderingOutput(ModelOutput):
     encoder_hidden_states: Optional[Tuple[torch.FloatTensor]] = None
     encoder_attentions: Optional[Tuple[torch.FloatTensor]] = None
 
-"""
-TODO attribution: https://github.com/airKlizz/passage-ordering
-"""
 class OrdTrainingModule(D2TTrainingModule, OrderingMixin):
     def __init__(self, args, **kwargs):
         super().__init__(args, **kwargs)
         self.model = BartModel.from_pretrained(
             args.model_name,
+            use_cache=True,
             return_dict=True
         )
         self.pointer = PointerHead(self.model.config.d_model)
@@ -260,6 +272,7 @@ class OrdTrainingModule(D2TTrainingModule, OrderingMixin):
 
         encoder_sequence_attention_mask = (input_ids == self.tokenizer.eos_token_id).float()
         if use_cache:
+            decoder_sequence_last_hidden_state = decoder_sequence_last_hidden_state[:, -1:]
             decoder_sequence_attention_mask = (decoder_input_ids[:, -1:] == self.eos_token_id).float()
         else:
             decoder_sequence_attention_mask = (decoder_input_ids == self.eos_token_id).float()
@@ -272,11 +285,9 @@ class OrdTrainingModule(D2TTrainingModule, OrderingMixin):
             query=decoder_sequence_last_hidden_state.transpose(1, 0),
             key=encoder_sequence_last_hidden_state.transpose(1, 0),
         )
-
         # logits: shape = (bsz, decoder_len, encoder_len), X_ij = probability of j to be the sentence after i
 
-        import pdb; pdb.set_trace()  # breakpoint f05e8efc //
-        
+
         assert sequence_attention_mask.size() == logits.size(), f"{sequence_attention_mask.size()}, {logits.size()}"
 
         logits[sequence_attention_mask == 0] = float("-inf")
@@ -326,6 +337,9 @@ class OrdTrainingModule(D2TTrainingModule, OrderingMixin):
     def test_step(self, batch, batch_idx):
         raise NotImplementedError
 
+# =============================
+# End of code based on https://github.com/airKlizz/passage-ordering/blob/main/training/scripts/models/bart_simple.py
+# =============================
 
 
 

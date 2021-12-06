@@ -11,6 +11,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import random
+import nltk
 
 from torch.utils.data import DataLoader, Dataset
 from data import get_dataset_class
@@ -110,6 +111,17 @@ class OrdInferenceModule(D2TInferenceModule):
         output = self(sequences, decoder_start_token_ids, num_beams)
         return np.argsort(output)
 
+    def predict(self, s, beam_size=1):
+        sequences = nltk.sent_tokenize(s)
+
+        output = self(sequences, num_beams=beam_size)
+        ordered_sequences = []
+        for idx in output:
+            ordered_sequences.append(sequences[idx])
+        return ordered_sequences
+
+
+
 
 
 class AggInferenceModule(D2TInferenceModule):
@@ -118,6 +130,9 @@ class AggInferenceModule(D2TInferenceModule):
 
 
     def predict(self, sents, beam_size=1):
+        if type(sents) == str:
+            sents = nltk.sent_tokenize(sents)
+
         text = f" {self.tokenizer.sep_token} ".join(sents)
 
         inputs = self.tokenizer(text,
