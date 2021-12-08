@@ -56,7 +56,7 @@ The *filtered* version of the dataset contains only examples which contain no om
 ## Pretrained Models
 You can download the pretrained models for individual pipeline steps here:
 
-- **ordering**: https://ufile.io/hrz5yq8l  (see https://github.com/airKlizz/passage-ordering)
+- **ordering**: https://ufile.io/hca87aq0
 - **aggregation**: https://ufile.io/h9mp3wzo
 - **paragraph compression (pc-filtered)**: https://ufile.io/4uvkbup5
 
@@ -64,23 +64,25 @@ You can download the pretrained models for individual pipeline steps here:
 
 
 ### Interactive Mode
-Tip: you can use any of the models in interactive mode (with manual input from the command line):.
+Tip: you can use any checkpoint in the interactive mode (with manual input from the command line). The sentences are split automatically using `nltk.sent_tokenize()`.
 
 Examples:
+- **ordering:**  `./interact.py --experiment ord`
 ```
-./interact.py --experiment ord
 [In]: Blue Spice is near Burger King. Blue Spice has average customer rating. Blue Spice is a coffee shop. 
 [Out]:
 ['Blue Spice is a coffee shop.',
  'Blue Spice is near Burger King.',
  'Blue Spice has average customer rating.']
-
-./interact.py --experiment agg
+```
+- **aggregation:**  `./interact.py --experiment agg`
+```
 [In]: Blue Spice is a coffee shop. Blue Spice is near Burger King. Blue Spice has average customer rating.
 [Out]:
 [0, 1] # 0=fuse, 1=separate
-
-./interact.py --experiment pc_filtered
+```
+- **paragraph compression:** `./interact.py --experiment pc_filtered`
+```
 [In]: Blue Spice is a coffee shop. Blue Spice is near Burger King. <sep> Blue Spice has average customer rating.
 [Out]:
 ['Blue Spice is a coffee shop near Burger King. It has average customer '
