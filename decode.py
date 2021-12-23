@@ -50,7 +50,7 @@ def parse_args(args=None):
         help="Override the default output filename <split>.out.")
     parser.add_argument("--checkpoint", type=str, default="model.ckpt",
         help="Override the default checkpoint name 'model.ckpt'.")
-    parser.add_argument("--max_threads", default=8, type=int,
+    parser.add_argument("--max_threads", default=1, type=int,
         help="Maximum number of threads.")
     parser.add_argument("--beam_size", default=1, type=int,
         help="Beam size used for decoding.")

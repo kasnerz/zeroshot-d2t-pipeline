@@ -60,7 +60,10 @@ class D2TDataModule(pl.LightningDataModule):
 
         for split in raw_dataset.keys():
             columns = ["attention_mask", "input_ids"]
-            columns_to_remove = ["sents", "sep"]
+            columns_to_remove = ["sents"]
+
+            if "sep" in raw_dataset[split].features.keys():
+                columns_to_remove.append("sep")
 
             if "text" in raw_dataset[split].features.keys():
                 columns.append("labels")
@@ -280,22 +283,22 @@ class PCDataModule(D2TDataModule):
         super().__init__(args, model_name, special_tokens=True)
 
     def _convert_to_features(self, example_batch, indices=None):
-        seps_all = example_batch["sep"]
-        sents_all = example_batch["sents"]
-        out = []
+        # seps_all = example_batch["sep"]
+        # sents_all = example_batch["sents"]
+        # out = []
 
-        for sents, seps in zip(sents_all, seps_all):
-            example = [sents[0]]
-            for sep, sent in zip(seps, sents[1:]):
-                if sep == 1:
-                    example.append(self.tokenizer.sep_token)
-                example.append(sent)
+        # for sents, seps in zip(sents_all, seps_all):
+        #     example = [sents[0]]
+        #     for sep, sent in zip(seps, sents[1:]):
+        #         if sep == 1:
+        #             example.append(self.tokenizer.sep_token)
+        #         example.append(sent)
 
-            text = " ".join(example)
-            out.append(text)
+        #     text = " ".join(example)
+        #     out.append(text)
 
         features = self.tokenizer(
-            out,
+            example_batch["sents"],
             max_length=self.args.max_length,
             truncation=True
         )
