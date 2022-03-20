@@ -93,21 +93,23 @@ The *filtered* version of the dataset contains examples without omissions or hal
 3. Preprocess the D2T datasets. This step will parse the raw D2T datasets to prepare the data for evaluation (the data is not needed for training).
 - WebNLG
 ```
-./preprocess.py 
+./preprocess.py \
     --dataset webnlg \
     --dataset_dir data/d2t/webnlg/data/v1.4/en \
     --templates templates/templates-webnlg.json \
     --output data/webnlg_1stage  \
+    --output_refs data/ref/webnlg  \
     --shuffle \
     --keep_separate_sents
 ```
 - E2E
 ```
-./preprocess.py 
+./preprocess.py \
     --dataset e2e \
     --dataset_dir data/d2t/e2e/cleaned-data/ \
     --templates templates/templates-e2e.json \
     --output data/e2e_1stage  \
+    --output_refs data/ref/e2e  \
     --shuffle \
     --keep_separate_sents
 ```
@@ -245,3 +247,66 @@ The following command will run the 1-stage pipeline:
 The output is always stored in the experiment directory of the pc model (default output name is `{split}.out`).
 
 ## Evaluation
+### E2E Metrics
+You can re-run automatic evaluation using `evaluate.py`. The script requires [E2E metrics](https://github.com/tuetschek/e2e-metrics) (cloned by `download_datasets_and_metrics.sh`). The following command evaluates the output for the test split from the 3-stage pipeline:
+
+```
+./evaluate.py \
+    --hyp_file experiments/pc/test.out \
+    --ref_file data/ref/${DATASET_DECODE}/test.ref \
+    --use_e2e_metrics
+```
+You can also run faster evaluation of BLEU score faster with the [sacreBLEU](https://pypi.org/project/sacrebleu/) package by omitting the flag `--use_e2e_metrics`.
+
+### Semantic Accuracy
+
+You can re-run the evaluation of semantic accuracy with [RoBERTa-MNLI](https://huggingface.co/roberta-large-mnli) with the following commands:
+```
+./utils/compute_accuracy.py \
+    --hyp_file experiments/pc_${VERSION}/test.out \
+    --ref_file data/webnlg_1stage/test.json \
+    --gpu
+```
+This command creates a space-separated file `<hyp_file>.acc`, where each line contains a number of templates,  a number of omissions, and number of hallucinations in the respective example. 
+
+A summary is printed using the following command:
+```
+./read_acc.py experiments/pc_${VERSION}/test.out.acc
+```
+
+- `or` = omission rate (omissions/facts)
+- `hr` = hallucination rate (hallucinations/examples)
+- `oer` = omission error rate (omissions/examples, not used in the paper)
+
+
+### Ordering
+*Note: the following examples are using WebNLG, computing the metrics for E2E / WikiFluent is analogous.*
+
+For calculating the ordering metrics, first extract the reference order:
+```
+./preprocess.py \
+    --dataset webnlg 
+    --dataset_dir data/d2t/webnlg/data/v1.4/en/\
+    --output data/ref/webnlg/ \
+    --extract_order \
+    --split test
+```
+
+Then re-run the ordering experiment with the flag `--indices_only`:
+```
+./order.py \
+    --experiment ord \
+    --in_dir data/webnlg_1stage \
+    --out_dir data/webnlg_1stage_ord \
+    --splits test \
+    --indices_only
+```
+
+Finally, utilize the script `compute_order_metrics.py` to compute BLEU-2 and accuracy:
+```
+./utils/compute_order_metrics.py \
+    --hyp_file data/webnlg_1stage_ord/test.out  \
+    --ref_file data/ref/webnlg/test.order.out 
+```
+
+### Aggregation
