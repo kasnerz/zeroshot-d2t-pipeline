@@ -118,7 +118,7 @@ if __name__ == '__main__':
     )
     trainer = pl.Trainer.from_argparse_args(args, 
         callbacks=[checkpoint_callback], 
-        accelerator='dp',
+        strategy='dp',
         resume_from_checkpoint=resume_from_checkpoint
     )
     trainer.fit(model, dm)
