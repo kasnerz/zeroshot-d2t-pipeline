@@ -31,7 +31,9 @@ from transformers import (
     AutoTokenizer,
 )
 
-
+"""
+PL modules used for inference (decoding / testing / interactive mode) 
+"""
 logger = logging.getLogger(__name__)
 
 class D2TInferenceModule:
@@ -39,6 +41,7 @@ class D2TInferenceModule:
         self.args = args
         self.model = training_module_cls.load_from_checkpoint(model_path)
         self.model.freeze()
+
         logger.info(f"Loaded model from {model_path}")
 
         self.model_name = self.model.model.name_or_path
@@ -85,6 +88,14 @@ class OrdInferenceModule(D2TInferenceModule):
             max_length=self.args.max_length,
             return_tensors="pt",
         )
+
+        # if hasattr(self.args, "gpus") and self.args.gpus > 0:
+        #     self.model.cuda()
+        #     for key in inputs.keys():
+        #         inputs[key] = inputs[key].cuda()
+        # else:
+        #     logger.warning("Not using GPU")
+
         output = self.model.order(
             input_ids=inputs["input_ids"],
             attention_mask=inputs["attention_mask"],

@@ -1,70 +1,57 @@
 # Neural Pipeline for Zero-Shot Data-to-Text Generation
 
-This repository contains code for zero-shot data-to-text generation from RDF triples using a pipeline of pretrained language models. 
+Zero-shot data-to-text generation from RDF triples using a pipeline of pretrained language models (BART, RoBERTa). 
 
-The paper is currently under anonymous review in ACL Rolling Review (November 2021): https://openreview.net/forum?id=Lz2fD-uQyeh
+This repository contains code, data, and system outputs for our paper published in ACL 2022: 
+> Zdeněk Kasner & Ondřej Dušek: Neural Pipeline for Zero-Shot Data-to-Text Generation. In: Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022).
+
+*TODO: add arXiv / anthology link*
 
 ## Model Overview
-The model operates over the facts in natural language generated with simple single-attribute templates.
+The pipeline transforms facts in natural language generated with simple single-attribute templates.
 
 <p align="left">
   <img src="img/model.png" width=400px />
 </p>
 
 The text is generated using a three-step pipeline:
-1) fact ordering
-2) fact aggregation
+1) ordering
+2) aggregation
 3) paragraph compression
-
-<!-- ## Quickstart
-TODO
- ### Pipeline
-1. Install the requirements:
-```
-pip install -r requirements.txt
-```
-2. Download the datasets:
-```
-./download_datasets.sh
-```
-3. Download the pretrained models:
-- fact ordering
-- fact aggregation
-- paragraph compression
-4. Run the pipeline:
-```
-./run_pipeline.sh --dataset webnlg --gpus 1
-``` -->
-
-**Note: The instructions and the code are being improved. We will finalize the repository after the anonymization period.**
 
 ## Requirements
 The pipeline is built using Python 3, PyTorch Lightning 1.2.5 and HuggingFace Transformers 4.12. 
 
 See `requirements.txt` for the full list of requirements.
 
+Installing the requirements:
+```
+pip install -r requirements.txt
+```
 
-## WikiFluent Corpus
-See the `wikifluent` directory for instructions on building the WikiFluent corpus. Alternatively, you can download the generated corpus:
+## Quickstart
 
-- https://ufile.io/swf75rip
 
-*Note: the link is temporary for the anonymization period. We will add permanent links as soon as possible.*
 
-The *filtered* version of the dataset contains only examples which contain no omissions or hallucinations according to `roberta-mnli`.
+### System Outputs
+You can find the generated descriptions from our pipeline in the [system_outputs](system_outputs) directory.
 
-## Pretrained Models
+
+### Pretrained Models
 You can download the pretrained models for individual pipeline steps here:
 
-- **ordering**: https://ufile.io/hca87aq0
-- **aggregation**: https://ufile.io/h9mp3wzo
-- **paragraph compression (pc-filtered)**: https://ufile.io/4uvkbup5
+| model | full  |  filtered | 
+|---|---|---|
+| ord  |  TBA |  - |   
+| agg  |  TBA |  - |  
+| pc   |  TBA | TBA  |  
+| pc-agg |  TBA | TBA  |  
+| pc-ord-agg | TBA   | TBA  | 
 
-*Note: the links are temporary for the anonymization period. We will add permanent links as soon as possible. We will also upload the full variety of the pretrained models, including the non-filtered, 2-stage and 1-stage models.*
 
 
 ### Interactive Mode
-Tip: you can use any checkpoint in the interactive mode (with manual input from the command line). The sentences are split automatically using `nltk.sent_tokenize()`.
+Tip: you can use any checkpoint using an interactive mode (with manual input from the command line). The input sentences are split automatically using `nltk.sent_tokenize()`.
 
 Examples:
 - **ordering:**  `./interact.py --experiment ord`
@@ -89,15 +76,21 @@ Examples:
  'rating.']
 ```
 
+## WikiFluent Corpus
+See the `wikifluent` directory for instructions on building the WikiFluent corpus. 
+
+You can also **[download the generated corpus](https://owncloud.cesnet.cz/index.php/s/2oVc8UeWq4u51Od/download)** :page_facing_up:
+
+The *filtered* version of the dataset contains examples without omissions or hallucinations (see the paper for details).
 
 ## Preprocessing
 
-1.  Download the [WikiFluent corpus](https://ufile.io/swf75rip) and place it in the `data` directory.
-2. Download the D2T datasets:
+1.  Download the [WikiFluent corpus](https://owncloud.cesnet.cz/index.php/s/2oVc8UeWq4u51Od/download) and unpack it in the `data` directory.
+2. Download the D2T datasets and E2E metrics:
 ```
-./download_datasets.sh
+./download_datasets_and_metrics.sh
 ```
-3. Preprocess the D2T datasets. This step will parse the raw D2T datasets to prepare the data for evaluation (the data is not needed for the training).
+3. Preprocess the D2T datasets. This step will parse the raw D2T datasets to prepare the data for evaluation (the data is not needed for training).
 - WebNLG
 ```
 ./preprocess.py 
@@ -124,7 +117,7 @@ Examples:
 ### Ordering
 The ordering model is trained on deshuffling the sentences from the wikifluent-*full* corpus. The model is needed for the 2-stage and 3-stage versions of the pipeline.
 
-The implementation of the ordering model is based on the code from https://github.com/airKlizz/passage-ordering. 
+The implementation of the ordering model is based on https://github.com/airKlizz/passage-ordering. 
 ```
 ./train.py \
     --in_dir "data/wikifluent_full" \
@@ -250,3 +243,5 @@ The following command will run the 1-stage pipeline:
 ```
 
 The output is always stored in the experiment directory of the pc model (default output name is `{split}.out`).
+
+## Evaluation

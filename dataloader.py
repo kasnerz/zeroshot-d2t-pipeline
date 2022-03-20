@@ -22,7 +22,13 @@ from model import add_special_tokens
 
 logger = logging.getLogger(__name__)
 
+"""
+Classes for loading data from raw JSONs into PyTorch Lightning DataModule
+"""
 class D2TDataModule(pl.LightningDataModule):
+    """
+    Common PL DataModule methods
+    """
     def __init__(self, args, model_name=None, special_tokens=False):
         super().__init__()
         self.args = args
@@ -62,6 +68,7 @@ class D2TDataModule(pl.LightningDataModule):
             columns = ["attention_mask", "input_ids"]
             columns_to_remove = ["sents"]
 
+            # deal with extra columns
             if "sep" in raw_dataset[split].features.keys():
                 columns_to_remove.append("sep")
 
@@ -109,6 +116,9 @@ class D2TDataModule(pl.LightningDataModule):
         )
 
     def _pad_sequence(self, batch):
+        """
+        Align sentence endings (=add paddings)
+        """
         batch_collated = {}
 
         paddings = {
@@ -125,6 +135,9 @@ class D2TDataModule(pl.LightningDataModule):
 
 
 class OrdDataModule(D2TDataModule):
+    """
+    DataModule for the ordering module
+    """
     def __init__(self, args, model_name=None):
         super().__init__(args, model_name)
 
@@ -167,7 +180,6 @@ class OrdDataModule(D2TDataModule):
                 type="torch",
                 columns=columns
             )
-
         return dataset
 
     def _convert_to_features(self, example_batch, indices=None):
@@ -236,6 +248,9 @@ class OrdDataModule(D2TDataModule):
 
 
 class AggDataModule(D2TDataModule):
+    """
+    DataModule for the aggregation module
+    """
     def __init__(self, args, model_name=None):
         super().__init__(args, model_name)
 
@@ -279,29 +294,40 @@ class AggDataModule(D2TDataModule):
 
 
 class PCDataModule(D2TDataModule):
+    """
+    DataModule for the PC module
+    """
     def __init__(self, args, model_name=None):
         super().__init__(args, model_name, special_tokens=True)
 
     def _convert_to_features(self, example_batch, indices=None):
-        # seps_all = example_batch["sep"]
-        # sents_all = example_batch["sents"]
-        # out = []
+        seps_all = example_batch["sep"]
+        sents_all = example_batch["sents"]
+        out = []
 
-        # for sents, seps in zip(sents_all, seps_all):
-        #     example = [sents[0]]
-        #     for sep, sent in zip(seps, sents[1:]):
-        #         if sep == 1:
-        #             example.append(self.tokenizer.sep_token)
-        #         example.append(sent)
 
-        #     text = " ".join(example)
-        #     out.append(text)
+        # TODO: DEBUG (only for WikiFluent!!)
+        logger.warning("Only DEBUG")
+        for sents, seps in zip(sents_all, seps_all):
+            example = [sents[0]]
+            for sep, sent in zip(seps, sents[1:]):
+                if sep == 1:
+                    example.append("<sep>")
+                example.append(sent)
+
+            text = " ".join(example)
+            out.append(text)
 
         features = self.tokenizer(
-            example_batch["sents"],
-            max_length=self.args.max_length,
-            truncation=True
-        )
+                    out,
+                    max_length=self.args.max_length,
+                    truncation=True
+                )
+        # features = self.tokenizer(
+        #     example_batch["sents"],
+        #     max_length=self.args.max_length,
+        #     truncation=True
+        # )
         features["labels"] = self.tokenizer(
             example_batch["text"]
         )["input_ids"]
@@ -310,6 +336,9 @@ class PCDataModule(D2TDataModule):
 
 
 class PCAggDataModule(D2TDataModule):
+    """
+    DataModule for the PC-agg module
+    """
     def __init__(self, args, model_name=None):
         super().__init__(args, model_name, special_tokens=True)
 
@@ -331,6 +360,9 @@ class PCAggDataModule(D2TDataModule):
 
 
 class PCOrdAggDataModule(D2TDataModule):
+    """
+    DataModule for the PC-ord-agg module
+    """
     def __init__(self, args, model_name=None):
         super().__init__(args, model_name, special_tokens=True)
         random.seed(args.seed)

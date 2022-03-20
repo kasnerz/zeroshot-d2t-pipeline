@@ -16,7 +16,8 @@ def evaluate_bleu(args):
         hyps = f.read().rstrip("\n").split("\n")
 
     with open(args.ref_file) as f:
-        refs = f.read().rstrip("\n").split("\n\n")
+        refs = f.read().rstrip("\n").split("\n")
+        # refs = f.read().rstrip("\n").split("\n\n")
         ref = [ref_group.split("\n") for ref_group in refs]
 
         max_refs = max([len(refs) for refs in ref])
@@ -32,7 +33,8 @@ def evaluate_accuracy(args):
         hyps = f.read().rstrip("\n").split("\n")
 
     with open(args.ref_file) as f:
-        refs = f.read().rstrip("\n").split("\n\n")
+        # refs = f.read().rstrip("\n").split("\n\n")
+        refs = f.read().rstrip("\n").split("\n")
         refs = [ref_group.split("\n") for ref_group in refs]
 
     assert len(hyps) == len(refs)

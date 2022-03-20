@@ -365,7 +365,7 @@ class OrderingMixin:
             if self._use_cache(outputs, use_cache):
                 past = outputs.past_key_values
 
-            scores = F.log_softmax(next_token_logits, dim=-1)  # (batch_size * num_beams, sequence_length)
+            scores = F.log_softmax(next_sequence_logits, dim=-1)  # (batch_size * num_beams, sequence_length)
 
             scores = self.postprocess_next_sequence_scores(
                 scores=scores,

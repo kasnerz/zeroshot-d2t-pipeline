@@ -17,7 +17,7 @@ class D2TOrderingModule:
     def __init__(self, args, model_path):
         self.model = OrdInferenceModule(args, model_path=model_path)
 
-    def order_dataset(self, in_filename, out_filename, join_sents):
+    def order_dataset(self, in_filename, out_filename, join_sents, shuffle=False):
         output = {
             "data" : []
         }
@@ -29,6 +29,9 @@ class D2TOrderingModule:
                 if len(passages) == 1:
                     passages_ordered = passages
                 else:
+                    if shuffle:
+                        np.random.shuffle(passages)
+
                     passages_ordered = self.model.order(passages)
 
                 logger.info(i)
@@ -48,7 +51,7 @@ class D2TOrderingModule:
         with open(os.path.join(out_filename), "w") as f:
             json.dump(output, f, indent=4, ensure_ascii=False)
 
-    def order_dataset_indices(self, in_filename, out_filename):
+    def order_dataset_indices(self, in_filename, out_filename, shuffle=False):
         with open(in_filename) as in_file, open(os.path.join(out_filename), "w") as f:
             j = json.load(in_file)
 
@@ -58,6 +61,9 @@ class D2TOrderingModule:
                 if len(passages) == 1:
                     # skip trivial examples
                     continue
+
+                if shuffle:
+                    np.random.shuffle(passages)
 
                 # indices = np.random.permutation(len(passages))
                 indices = self.model.order_indices(passages)
@@ -91,11 +97,20 @@ if __name__ == '__main__':
                     help='Output only permutation indices')
     parser.add_argument('--join_sents', action="store_true",
                     help='Join sentences to a single string on the output.')
-    parser.add_argument("--seed", type=str, default=42,
+    parser.add_argument('--shuffle', action="store_true",
+                    help='Shuffle the sentences before ordering.')
+    parser.add_argument("--seed", type=int, default=42,
         help="Random seed")
+    parser.add_argument("--gpus", type=int, default=1,
+        help="GPU count")
+    # parser.add_argument("--device", type=str, default="cuda",
+    #     help="Random seed")
     parser.add_argument("--max_length", type=int, default=1024,
         help="Maximum number of tokens per example")
     args = parser.parse_args()
+
+
+    np.random.seed(args.seed)
 
     model_path = os.path.join(args.exp_dir, args.experiment, args.checkpoint)
     dom = D2TOrderingModule(args, model_path=model_path)
@@ -106,11 +121,13 @@ if __name__ == '__main__':
         if args.indices_only:
             dom.order_dataset_indices(
                 in_filename=os.path.join(args.in_dir, f"{split}.json"),
-                out_filename=os.path.join(out_dir, f"{split}.out")
+                out_filename=os.path.join(out_dir, f"{split}.out"),
+                shuffle=args.shuffle
             )
         else:
             dom.order_dataset(
                 in_filename=os.path.join(args.in_dir, f"{split}.json"),
                 out_filename=os.path.join(out_dir, f"{split}.json"),
-                join_sents=args.join_sents
+                join_sents=args.join_sents,
+                shuffle=args.shuffle
             )

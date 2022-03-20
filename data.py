@@ -17,6 +17,10 @@ logger = logging.getLogger(__name__)
 DataTriple = namedtuple('DataTriple', ['subj', 'pred', 'obj'])
 
 def get_dataset_class(dataset_class):
+    """
+    A wrapper for easier introduction of new datasets.
+    Returns class "MyDataset" for a parameter "--dataset mydataset"
+    """
     try:
         # case-insensitive
         available_classes = {o.name.lower() : o for o in globals().values() 
@@ -28,6 +32,9 @@ def get_dataset_class(dataset_class):
         return None
 
 class DataEntry:
+    """
+    A single D2T dataset example: a set of triples & its possible lexicalizations
+    """
     def __init__(self, triples, lexs):
         self.triples = triples
         self.lexs = lexs
@@ -41,12 +48,15 @@ class D2TDataset:
         self.fallback_template = "The <predicate> of <subject> is <object> ."
 
     def load_from_dir(self, path, template_path, splits):
-        """Parses the original dataset files into an internal representation"""
+        """
+        Load the dataset
+        """
         raise NotImplementedError
 
-    # ====== templates
     def load_templates(self, templates_filename):
-        """Loads existing templates from a JSON file"""
+        """
+        Load existing templates from a JSON file
+        """
         logger.info(f"Loaded templates from {templates_filename}")
         with open(templates_filename) as f:
             self.templates = json.load(f)
@@ -58,11 +68,14 @@ class WebNLG(D2TDataset):
     def __init__(self):
         super().__init__()
 
-    # ====== templates
     def get_template(self, triple):
+        """
+        Return the template for the triple
+        """
         pred = triple.pred
 
         if pred in self.templates:
+            # Using just a single template
             assert len(self.templates[pred]) == 1
             template = self.templates[pred][0]
         else:
@@ -72,7 +85,9 @@ class WebNLG(D2TDataset):
         return template
 
     def load_from_dir(self, path, template_path, splits):
-        # ====== templates
+        """
+        Load the dataset
+        """
         self.load_templates(template_path)
 
         for split in splits:
@@ -97,11 +112,14 @@ class WebNLG(D2TDataset):
                 logger.warning(f"Skipping {err} entries without lexicalizations...")
 
     def _extract_lexs(self, lex_entries, triples):
+        """
+        Use `orderedtripleset` in the WebNLG dataset to determine the "ground-truth" order
+        of the triples (based on human references).
+        """
         lexs = []
 
         for entry in lex_entries:
             order, agg = self._extract_ord_agg(triples, entry.orderedtripleset)
-
             lex = {
                 "text" : entry.text,
                 "order" : order,
@@ -112,7 +130,11 @@ class WebNLG(D2TDataset):
         return lexs
 
     def _extract_ord_agg(self, triples, ordered_triples):
-        # ordered triples do not match the actual triples
+        """
+        Determine the permutation indices and aggregation markers from
+        the ground truth.
+        """
+        # if ordered triples do not match the actual triples -> fail
         ordered_triples_flattened = [x for sent in ordered_triples for x in sent]
         if len(ordered_triples_flattened) != len(triples):
             return None, None
@@ -147,8 +169,9 @@ class E2E(D2TDataset):
         super().__init__()
 
     def load_from_dir(self, path, template_path, splits):
-
-        # ====== templates
+        """
+        Load the dataset
+        """
         self.load_templates(template_path)
 
         for split in splits:
@@ -222,7 +245,8 @@ class E2E(D2TDataset):
             subj = vals[eatType_idx]
             del keys[eatType_idx]
             del vals[eatType_idx]
-        # still in some cases, there is not even an eatType -> hotfix so that we do not lose data
+        # still in some cases, there is not even an eatType 
+        #-> hotfix so that we do not lose data
         else:
             # logger.warning(f"Cannot recognize subject in mr: {mr}")
             subj = "restaurant"
@@ -234,11 +258,13 @@ class E2E(D2TDataset):
         return tuple(triples)
 
 
-    # ====== templates
     def get_template(self, triple):
+        """
+        Return the template for the triple
+        """
         if triple.pred in self.templates:
             templates = self.templates[triple.pred]
-
+            # special templates for familyFriendly yes / no
             if type(templates) is dict and triple.obj in templates:
                 template = templates[triple.obj][0]
             else:

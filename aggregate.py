@@ -69,32 +69,44 @@ class AggModule:
         with open(in_filename) as in_file:
             j = json.load(in_file)
             for i, example in enumerate(j["data"]):
-                total += 1
-                sents = example["sents"]
 
-                if len(sents) == 1:
-                    # skip trivial examples
-                    continue
+                try:
+                    total += 1
+                    sents = example["sents"]
 
-                out = []
-                seps = self.model.predict(sents)
+                    if len(sents) == 1:
+                        # skip trivial examples
+                        continue
 
-                if seps in example['text']:
-                    correct_agg += 1
+                    out = []
+                    seps = self.model.predict(sents)
 
-                random_seps = list(np.random.randint(2, size=len(seps)))
+                    if seps == example['sep']:
+                    # if seps in example['text']:
+                        correct_agg += 1
 
-                if random_seps in example['text']:
-                    correct_random += 1
+                    random_seps = list(np.random.randint(2, size=len(seps)))
 
-                for j, (s, r) in enumerate(zip(seps, random_seps)):
-                    total_pos += 1
-                    gold_pos = [e[j] for e in example['text']]
+                    # if random_seps in example['text']:
+                    if random_seps == example['sep']:
+                        correct_random += 1
 
-                    if s in gold_pos:
-                        correct_agg_perpos += 1
-                    if r in gold_pos:
-                        correct_random_perpos += 1
+                    for j, (s, r) in enumerate(zip(seps, random_seps)):
+                        total_pos += 1
+
+                        # gold_pos = [e[j] for e in example['text']]
+
+                        # if s in gold_pos:
+                        #     correct_agg_perpos += 1
+                        # if r in gold_pos:
+                        #     correct_random_perpos += 1
+
+                        if s == example["sep"][j]:
+                            correct_agg_perpos += 1
+                        if r == example["sep"][j]:
+                            correct_random_perpos += 1
+                except:
+                    logger.error("Something ugly happenned. This should not happen often.")
 
 
         print(f"Accuracy - random: {correct_random/total:.2f} ({correct_random}/{total})")
