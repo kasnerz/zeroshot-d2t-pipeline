@@ -38,7 +38,7 @@ class Preprocessor:
         return template
 
 
-    def create_examples(self, entry, dataset, shuffle, keep_separate_sents, extract_agg):
+    def create_examples(self, entry, dataset, shuffle, keep_separate_sents):
         """
         Generates training examples from an entry in the dataset
         """
@@ -46,53 +46,6 @@ class Preprocessor:
         lexs = entry.lexs
         triples = entry.triples
         sentences = []
-
-        if extract_agg:
-            # TODO split to a separate method
-            examples = []
-            if len(triples) == 1:
-                return examples
-
-            # there may be multiple possible ways to aggregate the sentences for every order
-            # for computing accuracy, getting a single aggregation scheme correct is enough
-            order_to_agg = defaultdict(list)
-
-            for lex in lexs:
-                if not lex["order"] or not lex["agg"]:
-                    continue
-                
-                order = np.argsort(lex["order"])
-                triples_reordered = np.array(triples)[order].tolist()
-                triples_reordered = [DataTriple(*x) for x in triples_reordered]
-                sentences = []
-                
-                prev_sent = 0
-                agg = []
-
-                for i, t in enumerate(triples_reordered):
-                    template = dataset.get_template(t)
-                    sentence = self.fill_template(template, t)
-                    sentence = self.tokenizer.detokenize(sentence)
-                    sentences.append(sentence)
-
-                    if i < len(triples_reordered) - 1:
-                        if lex["agg"][i+1] != prev_sent:
-                            agg.append(1)
-                            prev_sent = lex["agg"][i+1]
-                        else:
-                            agg.append(0)
-
-                order_to_agg[tuple(order)].append(tuple(agg))
-
-            for order, agg_list in order_to_agg.items():
-                example = {
-                    "sents" : sentences,
-                    "sep" : list(set(agg_list))
-                }
-                examples.append(example)
-
-            return examples
-
 
         for t in entry.triples:
             template = dataset.get_template(t)
@@ -136,7 +89,79 @@ class Preprocessor:
     #             mr = entry.lexs[0]["orig_mr"]
     #             f.write(mr + "\n")
 
+    def extract_agg(self, entry, dataset):
+        examples = []
+        triples = entry.triples
 
+        if len(triples) == 1:
+            return examples
+
+        # there is one way to aggregate sentences for every possible order
+        for lex in entry.lexs:
+            if not lex["order"] or not lex["agg"]:
+                continue
+            
+            # get the "reordering indices" for the given order
+            order = np.argsort(lex["order"])
+            # reorder the triples
+            triples_reordered = np.array(triples)[order].tolist()
+            triples_reordered = [DataTriple(*x) for x in triples_reordered]
+            sentences = []
+            prev_sent = 0
+            agg = []
+
+            for i, t in enumerate(triples_reordered):
+                template = dataset.get_template(t)
+                sentence = self.fill_template(template, t)
+                sentence = self.tokenizer.detokenize(sentence)
+                sentences.append(sentence)
+
+                if i < len(triples_reordered) - 1:
+                    if lex["agg"][i+1] != prev_sent:
+                        agg.append(1)
+                        prev_sent = lex["agg"][i+1]
+                    else:
+                        agg.append(0)
+
+            example = {
+                "sents" : sentences,
+                "sep" : agg
+            }
+            examples.append(example)
+            
+        return examples
+
+
+    def extract_order(self, split, extract_copy_baseline):
+        with open(os.path.join(self.out_dirname, f"{split}.order.out"), "w") as f:
+            for i, entry in enumerate(data):
+                if len(entry.triples) == 1:
+                    # skip trivial examples
+                    continue
+
+                if extract_copy_baseline:
+                    order = list(range(len(entry.triples)))
+                    f.write(" ".join([str(x) for x in order]) + "\n")
+                    continue
+
+                entry_ok = False
+
+                for lex in entry.lexs:
+                    order = lex["order"]
+
+                    if order:
+                        assert len(order) == len(entry.triples)
+                        entry_ok = True
+                        f.write(" ".join([str(x) for x in order]) + "\n")
+
+                if not entry_ok:
+                    # no valid order for the entry
+                    # -> generate a default order
+                    order = list(range(len(entry.triples)))
+                    f.write(" ".join([str(x) for x in order]) + "\n")
+
+                f.write("\n")
+        return
 
     def process(self, split, shuffle, extract_copy_baseline, extract_order, extract_agg, keep_separate_sents):
         """
@@ -146,39 +171,14 @@ class Preprocessor:
         data = self.dataset.data[split]
 
         if extract_order:
-            # TODO move to a separate method
-            with open(os.path.join(self.out_dirname, f"{split}.order.out"), "w") as f:
-                for i, entry in enumerate(data):
-                    if len(entry.triples) == 1:
-                        # skip trivial examples
-                        continue
-
-                    if extract_copy_baseline:
-                        order = list(range(len(entry.triples)))
-                        f.write(" ".join([str(x) for x in order]) + "\n")
-                        continue
-
-                    entry_ok = False
-
-                    for lex in entry.lexs:
-                        order = lex["order"]
-
-                        if order:
-                            assert len(order) == len(entry.triples)
-                            entry_ok = True
-                            f.write(" ".join([str(x) for x in order]) + "\n")
-
-                    if not entry_ok:
-                        # no valid order for the entry
-                        # -> generate a default order
-                        order = list(range(len(entry.triples)))
-                        f.write(" ".join([str(x) for x in order]) + "\n")
-
-                    f.write("\n")
+            self.extract_order(self, split, extract_copy_baseline)
             return
         
         for i, entry in enumerate(data):
-            examples = self.create_examples(entry, dataset, shuffle, keep_separate_sents, extract_agg)
+            if extract_agg:
+                examples = self.extract_agg(entry, dataset)
+            else:
+                examples = self.create_examples(entry, dataset, shuffle, keep_separate_sents)
 
             if examples and split != "train" and not extract_agg:
                 # keep just one example per tripleset
@@ -194,8 +194,6 @@ class Preprocessor:
             with open(os.path.join(self.out_dirname, f"{split}_triples.out"), "w") as f:
                 for example in output["data"]:
                     f.write(example["text"] + "\n")
-                    # triples = example["text"]
-                    # f.write(", ".join([f"({triple.subj} | {triple.pred} | {triple.obj})" for triple in triples]) + "\n")
 
 
 

@@ -248,11 +248,17 @@ The output is always stored in the experiment directory of the pc model (default
 
 ## Evaluation
 ### E2E Metrics
-You can re-run automatic evaluation using `evaluate.py`. The script requires [E2E metrics](https://github.com/tuetschek/e2e-metrics) (cloned by `download_datasets_and_metrics.sh`). The following command evaluates the output for the test split from the 3-stage pipeline:
+You can re-run automatic evaluation using `evaluate.py`. The script requires [E2E metrics](https://github.com/tuetschek/e2e-metrics) (cloned by `download_datasets_and_metrics.sh`) with additional requirements which can be instlled by:
+```
+cd e2e_metrics
+pip install -r requirements.txt
+```
+
+The following command evaluates the output for the test split from the 3-stage pipeline:
 
 ```
 ./evaluate.py \
-    --hyp_file experiments/pc/test.out \
+    --hyp_file experiments/pc_${VERSION}/test.out \
     --ref_file data/ref/${DATASET_DECODE}/test.ref \
     --use_e2e_metrics
 ```
@@ -271,7 +277,7 @@ This command creates a space-separated file `<hyp_file>.acc`, where each line co
 
 A summary is printed using the following command:
 ```
-./read_acc.py experiments/pc_${VERSION}/test.out.acc
+./utils/read_acc.py experiments/pc_${VERSION}/test.out.acc
 ```
 
 - `or` = omission rate (omissions/facts)
@@ -285,8 +291,8 @@ A summary is printed using the following command:
 For calculating the ordering metrics, first extract the reference order:
 ```
 ./preprocess.py \
-    --dataset webnlg 
-    --dataset_dir data/d2t/webnlg/data/v1.4/en/\
+    --dataset webnlg \
+    --dataset_dir data/d2t/webnlg/data/v1.4/en/ \
     --output data/ref/webnlg/ \
     --extract_order \
     --split test
@@ -302,7 +308,7 @@ Then re-run the ordering experiment with the flag `--indices_only`:
     --indices_only
 ```
 
-Finally, utilize the script `compute_order_metrics.py` to compute BLEU-2 and accuracy:
+Finally, use the script `compute_order_metrics.py` to compute BLEU-2 and accuracy:
 ```
 ./utils/compute_order_metrics.py \
     --hyp_file data/webnlg_1stage_ord/test.out  \
@@ -310,3 +316,24 @@ Finally, utilize the script `compute_order_metrics.py` to compute BLEU-2 and acc
 ```
 
 ### Aggregation
+
+For calculating the aggregation metrics, first extract the reference aggregation:
+```
+./preprocess.py \
+    --dataset webnlg \
+    --dataset_dir data/d2t/webnlg/data/v1.4/en/ \
+    --templates templates/templates-webnlg.json \
+    --output data/webnlg_agg \
+    --split test  \
+    --extract_agg 
+```
+Note that an aggregation example is created for each possible order.
+
+Then run the script `aggregate.py` with the flag `--eval` for evaluating aggregation accuracy.
+```
+./aggregate.py \
+    --experiment agg \
+    --in_dir data/webnlg_agg/ \
+    --splits test  \
+    --eval
+```

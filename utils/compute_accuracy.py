@@ -45,32 +45,32 @@ class AccuracyMetric:
         return prediction
 
     def run(self):
-        lines = self.hyp_file.readlines()
+        hyp_lines = self.hyp_file.readlines()
         ref_data = json.load(self.ref_file)["data"]
 
-        assert(len(lines) == len(ref_data))
-        N = len(lines)
+        assert(len(hyp_lines) == len(ref_data))
+        N = len(hyp_lines)
 
-        for idx, (line, example) in enumerate(zip(lines, ref_data)):
+        for idx, (hyp_line, example) in enumerate(zip(hyp_lines, ref_data)):
             omissions = 0
             hallucinations = 0
-            ref = line
-            hyps = example["text"]
-            hyp_sent = " ".join(hyps)
+            hyp = hyp_line.strip()
+            ref_sents = example["sents"]
+            ref_all = " ".join(ref_sents)
 
-            for hyp in hyps:
-                prediction = self.predict(ref, hyp)
+            for ref_sent in ref_sents:
+                prediction = self.predict(hyp, ref_sent)
 
                 if self.nli_map[prediction] != "ENTAILMENT":
                     omissions += 1
 
-            prediction = self.predict(hyp_sent, ref)
+            prediction = self.predict(ref_all, hyp)
 
             if self.nli_map[prediction] != "ENTAILMENT":
                 hallucinations += 1
 
-            print(f"{idx}/{N} {len(hyps)} {omissions} {hallucinations}")
-            self.acc_file.write(f"{len(hyps)} {omissions} {hallucinations}\n")
+            print(f"{idx}/{N} {len(ref_sents)} {omissions} {hallucinations}")
+            self.acc_file.write(f"{len(ref_sents)} {omissions} {hallucinations}\n")
 
 
 if __name__ == "__main__":

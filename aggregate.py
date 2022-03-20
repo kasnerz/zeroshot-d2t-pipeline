@@ -23,6 +23,10 @@ class AggModule:
         self.separator = separator
 
     def aggregate_dataset(self, in_filename, out_filename):
+        """
+        Create JSON file which can be processed by the paragraph compression model.
+        Separators (<sep>) are inserted in the source texts according to the model predictions, target is copied.
+        """
         output = {
             "data" : []
         }
@@ -31,7 +35,6 @@ class AggModule:
 
             for i, example in enumerate(j["data"]):
                 sents = example["sents"]
-
                 out = []
 
                 if len(sents) == 1:
@@ -58,7 +61,11 @@ class AggModule:
 
         logger.info("Aggregation finished.")
 
+
     def aggregate_dataset_eval(self, in_filename):
+        """
+        Run the aggregation model and compute evaluation metrics.
+        """
         correct_agg = 0
         correct_random = 0
         correct_agg_perpos = 0
@@ -82,32 +89,21 @@ class AggModule:
                     seps = self.model.predict(sents)
 
                     if seps == example['sep']:
-                    # if seps in example['text']:
                         correct_agg += 1
 
                     random_seps = list(np.random.randint(2, size=len(seps)))
 
-                    # if random_seps in example['text']:
                     if random_seps == example['sep']:
                         correct_random += 1
 
                     for j, (s, r) in enumerate(zip(seps, random_seps)):
                         total_pos += 1
-
-                        # gold_pos = [e[j] for e in example['text']]
-
-                        # if s in gold_pos:
-                        #     correct_agg_perpos += 1
-                        # if r in gold_pos:
-                        #     correct_random_perpos += 1
-
                         if s == example["sep"][j]:
                             correct_agg_perpos += 1
                         if r == example["sep"][j]:
                             correct_random_perpos += 1
                 except:
                     logger.error("Something ugly happenned. This should not happen often.")
-
 
         print(f"Accuracy - random: {correct_random/total:.2f} ({correct_random}/{total})")
         print(f"Accuracy - agg module: {correct_agg/total:.2f} ({correct_agg}/{total})")
@@ -160,13 +156,14 @@ if __name__ == "__main__":
         args.separator)
 
     out_dir = args.out_dir
-    os.makedirs(out_dir, exist_ok=True)
+
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
 
     for split in args.splits:
         if args.eval:
             dam.aggregate_dataset_eval(
                 in_filename=os.path.join(args.in_dir, f"{split}.json"),
-                # out_filename=os.path.join(out_dir, f"{split}.out"),
             )
         else:
             dam.aggregate_dataset(

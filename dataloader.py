@@ -301,33 +301,34 @@ class PCDataModule(D2TDataModule):
         super().__init__(args, model_name, special_tokens=True)
 
     def _convert_to_features(self, example_batch, indices=None):
-        seps_all = example_batch["sep"]
-        sents_all = example_batch["sents"]
-        out = []
 
+        if "sep" in example_batch:
+            seps_all = example_batch["sep"]
+            sents_all = example_batch["sents"]
+            out = []
 
-        # TODO: DEBUG (only for WikiFluent!!)
-        logger.warning("Only DEBUG")
-        for sents, seps in zip(sents_all, seps_all):
-            example = [sents[0]]
-            for sep, sent in zip(seps, sents[1:]):
-                if sep == 1:
-                    example.append("<sep>")
-                example.append(sent)
+            for sents, seps in zip(sents_all, seps_all):
+                example = [sents[0]]
+                for sep, sent in zip(seps, sents[1:]):
+                    if sep == 1:
+                        example.append("<sep>")
+                    example.append(sent)
 
-            text = " ".join(example)
-            out.append(text)
+                text = " ".join(example)
+                out.append(text)
 
-        features = self.tokenizer(
-                    out,
-                    max_length=self.args.max_length,
-                    truncation=True
-                )
-        # features = self.tokenizer(
-        #     example_batch["sents"],
-        #     max_length=self.args.max_length,
-        #     truncation=True
-        # )
+            features = self.tokenizer(
+                        out,
+                        max_length=self.args.max_length,
+                        truncation=True
+                    )
+        else:
+            features = self.tokenizer(
+                example_batch["sents"],
+                max_length=self.args.max_length,
+                truncation=True
+            )
+
         features["labels"] = self.tokenizer(
             example_batch["text"]
         )["input_ids"]

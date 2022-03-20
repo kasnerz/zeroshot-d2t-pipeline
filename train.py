@@ -95,12 +95,13 @@ if __name__ == '__main__':
 
     if args.model_path:
         model = training_module.load_from_checkpoint(
-            args.model_path
+            args.model_path,
+            datamodule=dm
         )
         if args.resume_training:
             resume_from_checkpoint = args.model_path
     else:
-        model = training_module(args)
+        model = training_module(args, datamodule=dm)
 
         if args.resume_training:
             logger.error("Model path not specified, training not resumed.")
