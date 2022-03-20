@@ -57,6 +57,11 @@ class D2TDataset:
         """
         Load existing templates from a JSON file
         """
+
+        if not templates_filename:
+            logger.warning(f"Templates will not be loaded")
+            return
+            
         logger.info(f"Loaded templates from {templates_filename}")
         with open(templates_filename) as f:
             self.templates = json.load(f)

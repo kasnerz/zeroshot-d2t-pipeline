@@ -117,6 +117,27 @@ class Preprocessor:
 
         return examples
 
+    def extract_refs(self, out_dirname, split):
+        with open(f"{out_dirname}/{split}.ref", "w") as f:
+            data = self.dataset.data[split]
+
+            for entry in data:
+                for lex in entry.lexs:
+                    f.write(lex["text"] + "\n")
+                f.write("\n")
+
+
+    # def extract_mrs(self, out_dirname, split):
+    #     with open(f"{out_dirname}/{split}.ref", "w") as f:
+    #         data = self.dataset.data[split]
+
+    #         for entry in data:
+    #             # same mr for all lexs
+    #             mr = entry.lexs[0]["orig_mr"]
+    #             f.write(mr + "\n")
+
+
+
     def process(self, split, shuffle, extract_copy_baseline, extract_order, extract_agg, keep_separate_sents):
         """
         Processes and outputs training data for the sentence fusion model
@@ -188,6 +209,8 @@ if __name__ == '__main__':
         help="Path to the JSON file with templates")
     parser.add_argument("--output", type=str, required=True,
         help="Name of the output directory")
+    parser.add_argument("--output_refs", type=str, default=None,
+        help="Name of the output directory for references.")
     parser.add_argument('--splits', type=str, nargs='+', default=["train", "dev", "test"],
                     help='Dataset splits (e.g. train dev test)')
     parser.add_argument("--seed", type=int, default=42,
@@ -202,6 +225,8 @@ if __name__ == '__main__':
         help="Extract ordering information (evaluation, WebNLG only).")
     parser.add_argument("--extract_agg", action="store_true",
         help="Extract aggregation information (evaluation, WebNLG only).")
+    # parser.add_argument("--extract_mrs", action="store_true",
+    #     help="Extract meaning representations for the slot error script (evaluation, E2E only).")
     args = parser.parse_args()
     random.seed(args.seed)
 
@@ -233,6 +258,11 @@ if __name__ == '__main__':
     preprocessor = Preprocessor(dataset=dataset, 
         out_dirname=out_dirname,
     )
+
+    # if args.extract_mrs:    
+    #     for split in args.splits:
+    #         preprocessor.extract_mrs(out_dirname, split)
+
     for split in args.splits:
         preprocessor.process(split, 
             shuffle=args.shuffle, 
@@ -241,5 +271,12 @@ if __name__ == '__main__':
             extract_agg=args.extract_agg,
             keep_separate_sents=args.keep_separate_sents
         )
+
+    if args.output_refs:
+        os.makedirs(args.output_refs, exist_ok=True)
+
+        for split in args.splits:
+            logger.info(f"Extracting {split} references")
+            preprocessor.extract_refs(args.output_refs, split)
 
     logger.info(f"Preprocessing finished.")

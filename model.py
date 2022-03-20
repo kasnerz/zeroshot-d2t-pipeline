@@ -64,10 +64,12 @@ class D2TTrainingModule(pl.LightningModule):
     def __init__(self, args, **kwargs):
         super().__init__()
         self.args = args
-        self.save_hyperparameters()
+        self.save_hyperparameters(ignore=["datamodule"])
+
+        self.special_tokens = None
         self.tokenizer = AutoTokenizer.from_pretrained(args.model_name,
                                                        use_fast=True)
-
+        self.datamodule = kwargs.get("datamodule", None)
 
     def forward(self, **inputs):
         out = self.model(
@@ -114,8 +116,8 @@ class D2TTrainingModule(pl.LightningModule):
             betas=(self.args.adam_beta1, self.args.adam_beta2)
         )
 
-        total_steps = self.args.max_steps if self.args.max_steps else len(
-            self.train_dataloader()) * self.args.max_epochs
+        total_steps = self.args.max_steps if (self.args.max_steps is not None and self.args.max_steps != -1) else len(
+            self.datamodule.train_dataloader()) * self.args.max_epochs
         warmup_steps = total_steps * self.args.warmup_proportion
 
         scheduler = get_scheduler(
