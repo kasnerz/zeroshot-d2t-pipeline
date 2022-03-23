@@ -44,9 +44,9 @@ Download the pretrained models for individual pipeline steps here:
 |---|---|---|
 | ord  |  [link](https://owncloud.cesnet.cz/index.php/s/y3CEtWMmfEy1HMb/download) |  - |   
 | agg  |  [link](https://owncloud.cesnet.cz/index.php/s/R1c9RNgJK5GP48b/download) |  - |  
-| pc   |  [link](https://owncloud.cesnet.cz/index.php/s/jbvs1Np4JHH0FsK) | [link](https://owncloud.cesnet.cz/index.php/s/UTheCz76iMciPDT) |  
-| pc-agg |  [link](https://owncloud.cesnet.cz/index.php/s/BUU6DpACUuqd3yf) | [link](https://owncloud.cesnet.cz/index.php/s/NF7Tdi5dt16uxZb/download)  |  
-| pc-ord-agg | [link](https://owncloud.cesnet.cz/index.php/s/J3FWfScJx9MkKXQ)   | [link](https://owncloud.cesnet.cz/index.php/s/C2JTa8Np2vrUQHJ) | 
+| pc   |  [link](https://owncloud.cesnet.cz/index.php/s/jbvs1Np4JHH0FsK/download) | [link](https://owncloud.cesnet.cz/index.php/s/UTheCz76iMciPDT/download) |  
+| pc-agg |  [link](https://owncloud.cesnet.cz/index.php/s/BUU6DpACUuqd3yf/download) | [link](https://owncloud.cesnet.cz/index.php/s/NF7Tdi5dt16uxZb/download)  |  
+| pc-ord-agg | [link](https://owncloud.cesnet.cz/index.php/s/J3FWfScJx9MkKXQ/download)   | [link](https://owncloud.cesnet.cz/index.php/s/C2JTa8Np2vrUQHJ/download) | 
 
 
 
