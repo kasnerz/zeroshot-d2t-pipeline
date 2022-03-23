@@ -38,15 +38,15 @@ You can find the generated descriptions from our pipeline in the [system_outputs
 
 
 ### Pretrained Models
-You can download the pretrained models for individual pipeline steps here:
+Download the pretrained models for individual pipeline steps here:
 
 | model | full  |  filtered | 
 |---|---|---|
-| ord  |  TBA |  - |   
-| agg  |  TBA |  - |  
-| pc   |  TBA | TBA  |  
-| pc-agg |  TBA | TBA  |  
-| pc-ord-agg | TBA   | TBA  | 
+| ord  |  [link](https://owncloud.cesnet.cz/index.php/s/y3CEtWMmfEy1HMb/download) |  - |   
+| agg  |  [link](https://owncloud.cesnet.cz/index.php/s/R1c9RNgJK5GP48b/download) |  - |  
+| pc   |  [link](https://owncloud.cesnet.cz/index.php/s/jbvs1Np4JHH0FsK) | [link](https://owncloud.cesnet.cz/index.php/s/UTheCz76iMciPDT) |  
+| pc-agg |  [link](https://owncloud.cesnet.cz/index.php/s/BUU6DpACUuqd3yf) | [link](https://owncloud.cesnet.cz/index.php/s/NF7Tdi5dt16uxZb/download)  |  
+| pc-ord-agg | [link](https://owncloud.cesnet.cz/index.php/s/J3FWfScJx9MkKXQ)   | [link](https://owncloud.cesnet.cz/index.php/s/C2JTa8Np2vrUQHJ) | 
 
 
 
@@ -54,7 +54,7 @@ You can download the pretrained models for individual pipeline steps here:
 Tip: you can use any checkpoint using an interactive mode (with manual input from the command line). The input sentences are split automatically using `nltk.sent_tokenize()`.
 
 Examples:
-- **ordering:**  `./interact.py --experiment ord`
+- **ordering:**  `./interact.py --experiment ord --module ord`
 ```
 [In]: Blue Spice is near Burger King. Blue Spice has average customer rating. Blue Spice is a coffee shop. 
 [Out]:
@@ -62,13 +62,13 @@ Examples:
  'Blue Spice is near Burger King.',
  'Blue Spice has average customer rating.']
 ```
-- **aggregation:**  `./interact.py --experiment agg`
+- **aggregation:**  `./interact.py --experiment agg --module agg`
 ```
 [In]: Blue Spice is a coffee shop. Blue Spice is near Burger King. Blue Spice has average customer rating.
 [Out]:
 [0, 1] # 0=fuse, 1=separate
 ```
-- **paragraph compression:** `./interact.py --experiment pc_filtered`
+- **paragraph compression:** `./interact.py --experiment pc_filtered --module pc`
 ```
 [In]: Blue Spice is a coffee shop. Blue Spice is near Burger King. <sep> Blue Spice has average customer rating.
 [Out]:
