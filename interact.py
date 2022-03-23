@@ -5,6 +5,7 @@ import logging
 import numpy as np
 import os
 import re
+import sys
 import torch
 import pytorch_lightning as pl
 
@@ -25,7 +26,9 @@ if __name__ == "__main__":
     parser.add_argument("--exp_dir", default="experiments", type=str,
         help="Base directory of the experiment.")
     parser.add_argument("--experiment", type=str, required=True,
-        help="Experiment name. Refers to a folder in `exp_dir` and also determines the pipeline module.")
+        help="Experiment name. Refers to a folder in `exp_dir`.")
+    parser.add_argument("--module", required=True,
+        help="Pipeline module: pc (applies to all variants) / agg / ord")
     parser.add_argument("--seed", default=42, type=int,
         help="Random seed.")
     parser.add_argument("--max_threads", default=8, type=int,
@@ -49,12 +52,14 @@ if __name__ == "__main__":
 
     # determine the PL module to be used for inference
     # works like this for convenience, feel free to override
-    if "ord" in args.experiment:
+    if args.module == "ord":
         inference_module_cls = OrdInferenceModule
-    elif "agg" in args.experiment:
+    elif args.module == "agg":
         inference_module_cls = AggInferenceModule
-    else:
+    elif args.module == "pc":
         inference_module_cls = PCInferenceModule
+    else:
+        logger.error(f"Module not recognized: {args.module}. Use one of: {{pc,agg,ord}}.")
 
     dm = inference_module_cls(args, model_path=model_path)
     logger.info(f"Using {inference_module_cls}")
