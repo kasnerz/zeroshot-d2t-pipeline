@@ -2,10 +2,10 @@
 
 Zero-shot data-to-text generation from RDF triples using a pipeline of pretrained language models (BART, RoBERTa). 
 
-This repository contains code, data, and system outputs for our paper published in ACL 2022: 
+This repository contains code, data, and system outputs for the paper published in ACL 2022: 
 > Zdeněk Kasner & Ondřej Dušek: Neural Pipeline for Zero-Shot Data-to-Text Generation. In: Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL 2022).
 
-*TODO: add arXiv / anthology link*
+Link for the paper: https://arxiv.org/abs/2203.16279
 
 ## Model Overview
 The pipeline transforms facts in natural language generated with simple single-attribute templates.
@@ -20,7 +20,7 @@ The text is generated using a three-step pipeline:
 3) paragraph compression
 
 ## Requirements
-The pipeline is built using Python 3, PyTorch Lightning 1.2.5 and HuggingFace Transformers 4.12. 
+The pipeline is built using Python 3, PyTorch Lightning and HuggingFace Transformers. 
 
 See `requirements.txt` for the full list of requirements.
 
@@ -248,7 +248,7 @@ The output is always stored in the experiment directory of the pc model (default
 
 ## Evaluation
 ### E2E Metrics
-You can re-run automatic evaluation using `evaluate.py`. The script requires [E2E metrics](https://github.com/tuetschek/e2e-metrics) (cloned by `download_datasets_and_metrics.sh`) with additional requirements which can be instlled by:
+You can re-run automatic evaluation using `evaluate.py`. The script requires [E2E metrics](https://github.com/tuetschek/e2e-metrics) (cloned by `download_datasets_and_metrics.sh`) with additional requirements which can be installed by:
 ```
 cd e2e_metrics
 pip install -r requirements.txt
