@@ -337,3 +337,8 @@ Then run the script `aggregate.py` with the flag `--eval` for evaluating aggrega
     --splits test  \
     --eval
 ```
+
+## Acknowledgements
+This work was co-funded by the European Union (ERC, NG-NLG, 101039303).
+
+<img src="img/LOGO_ERC-FLAG_FP.png" alt="erc-logo" height="150"/>
