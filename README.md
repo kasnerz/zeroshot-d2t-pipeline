@@ -48,7 +48,7 @@ Download the pretrained models for individual pipeline steps here:
 | pc-agg |  [link](https://owncloud.cesnet.cz/index.php/s/BUU6DpACUuqd3yf/download) | [link](https://owncloud.cesnet.cz/index.php/s/NF7Tdi5dt16uxZb/download)  |  
 | pc-ord-agg | [link](https://owncloud.cesnet.cz/index.php/s/J3FWfScJx9MkKXQ/download)   | [link](https://owncloud.cesnet.cz/index.php/s/C2JTa8Np2vrUQHJ/download) | 
 
-
+Additionally, you can download the model trained on WikiSplit [here](https://owncloud.cesnet.cz/index.php/s/AJna6AcDvN5AvQo/download) (see issue [#3](https://github.com/kasnerz/zeroshot-d2t-pipeline/issues/3)).
 
 ### Interactive Mode
 Tip: you can use any checkpoint using an interactive mode (with manual input from the command line). The input sentences are split automatically using `nltk.sent_tokenize()`.
